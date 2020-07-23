@@ -1,0 +1,10 @@
+# 忽略一些本地编译的东西
+public/
+db.json
+.idea/
+.deploy_git/
+node_modules/
+
+
+# mac系统的东西
+*.DS_Store

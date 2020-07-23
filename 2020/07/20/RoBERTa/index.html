@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="论文简介&amp;emsp;&amp;emsp;这篇论文发现当前的BERT是没有充分训练的，如果经过好好调参的话，BERT是可以比后BERT时代的模型效果要好的。而且由于训练是很耗费资源和时间的，所以很多预训练模型都无法进行系统的比较。&amp;emsp;&amp;emsp;本论文对于BERT的改进主要有以下几点：1、在更多数据上进行更长时间的训练，同时采用更大的batch；2、去除NSP任务；3、在更长句子维度上进行训练；4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RoBERTa">
+<meta property="og:url" content="http://yoursite.com/2020/07/20/RoBERTa/index.html">
+<meta property="og:site_name" content="Linhao">
+<meta property="og:description" content="论文简介&amp;emsp;&amp;emsp;这篇论文发现当前的BERT是没有充分训练的，如果经过好好调参的话，BERT是可以比后BERT时代的模型效果要好的。而且由于训练是很耗费资源和时间的，所以很多预训练模型都无法进行系统的比较。&amp;emsp;&amp;emsp;本论文对于BERT的改进主要有以下几点：1、在更多数据上进行更长时间的训练，同时采用更大的batch；2、去除NSP任务；3、在更长句子维度上进行训练；4">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/pasted-0.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/linhao0204/images_bed/master/images/ALBERT-SOP.png">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/60B7B39CF3C2416C9B6C6236ED935C8F/18342">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/B75EA588EEDC4EE5A4D423E47E3BA76A/18386">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/16FA83BAE59B43C6A98AFFFA6D62F0C2/18402">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/4AD6BA2596E541189DD8D7AE3F51EA73/18421">
+<meta property="article:published_time" content="2020-07-20T05:09:00.000Z">
+<meta property="article:modified_time" content="2020-07-23T05:51:13.768Z">
+<meta property="article:author" content="Linhao">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-0.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/07/20/RoBERTa/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>RoBERTa | Linhao</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Linhao</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/20/RoBERTa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Linhao">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Linhao">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RoBERTa
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-07-20 13:09:00" itemprop="dateCreated datePublished" datetime="2020-07-20T13:09:00+08:00">2020-07-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-23 13:51:13" itemprop="dateModified" datetime="2020-07-23T13:51:13+08:00">2020-07-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h3 id="论文简介"><a href="#论文简介" class="headerlink" title="论文简介"></a>论文简介</h3><p>&emsp;&emsp;这篇论文发现当前的BERT是没有充分训练的，如果经过好好调参的话，BERT是可以比后BERT时代的模型效果要好的。而且由于训练是很耗费资源和时间的，所以很多预训练模型都无法进行系统的比较。<br>&emsp;&emsp;本论文对于BERT的改进主要有以下几点：1、在更多数据上进行更长时间的训练，同时采用更大的batch；2、去除NSP任务；3、在更长句子维度上进行训练；4、在训练过程中动态调整mask。同时收集了一个新的数据集（CC-NEWS）。</p>
+<h3 id="BERT介绍"><a href="#BERT介绍" class="headerlink" title="BERT介绍"></a>BERT介绍</h3><p>&emsp;&emsp;<strong>MLM任务</strong>,随机选择15%的token进行mask，其中80%替换为MASK，10%保持不变，10%替换为别的token。在BERT中是在整个预训练的数据集中重复10次，即相当于生成10倍的训练样本，保存之后在后面的训练过程中就保持不变了。<br>&emsp;&emsp;<strong>NSP任务</strong>，预测输入的两个句子在原文中是不是上下文的关系。</p>
+<h5 id="原BERT的参数设置"><a href="#原BERT的参数设置" class="headerlink" title="原BERT的参数设置"></a>原BERT的参数设置</h5><ul>
+<li>采用Adam优化器，$beta_1=0.9, beta_2=0.999, \varepsilon=1e-6$，学习率采用的是warm up策略，前10000个 step达到峰值1e-4，后面再递减</li>
+<li>所有层的dropout都是0.1</li>
+<li>模型训练1000000个step，batch为256，句长为512<br><img src="/images/pasted-0.png" alt="upload successful"><br><img src="https://raw.githubusercontent.com/linhao0204/images_bed/master/images/ALBERT-SOP.png" alt="image"></li>
+</ul>
+<h5 id="本文复现BERT的参数设置"><a href="#本文复现BERT的参数设置" class="headerlink" title="本文复现BERT的参数设置"></a>本文复现BERT的参数设置</h5><ul>
+<li>根据具体设置调整了峰值学习率和warmup步数</li>
+<li>训练过程对Adam优化器的$\varepsilon$参数非常敏感</li>
+<li>在batch比较大的情况下，设置$beta_2=0.98$有利于提高训练稳定性</li>
+<li>训练BERT的时候前90%的时间是采用较短的句长？？？（但是在bert源码中没看到这部分代码，只是在生成mask训练样本的时候，会有10%生成较短的文本，代码给出的解释是为了使bert在短文本问题中也能使用，而不会受限于512的文本长度）。在本文中均采用512长度的文本进行训练</li>
+</ul>
+<h3 id="论文改进"><a href="#论文改进" class="headerlink" title="论文改进"></a>论文改进</h3><h5 id="动态掩码和静态掩码"><a href="#动态掩码和静态掩码" class="headerlink" title="动态掩码和静态掩码"></a>动态掩码和静态掩码</h5><p>&emsp;&emsp;BERT是在训练之前就已经将训练数据处理好了，本论文是在训练过程中对数据进行mask，从结果来看动态掩码效果有提升，但不是很明显。<br><img src="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/60B7B39CF3C2416C9B6C6236ED935C8F/18342" alt="image"></p>
+<h5 id="不同文档分割方式和NSP任务"><a href="#不同文档分割方式和NSP任务" class="headerlink" title="不同文档分割方式和NSP任务"></a>不同文档分割方式和NSP任务</h5><p>&emsp;&emsp;分为四种情况进行实验：</p>
+<ul>
+<li>SEGMENT-PAIR+NSP：来自于一个或两个文档的多个句子组成总的输入，和原有的BERT论文一致</li>
+<li>SENTENCE-PAIR+NSP：来自于一个或两个文档的单个句子，句子级别的</li>
+<li>FULL-SENTENCES：来自于多个文档的句子，不同文档的句子之间用符号分隔，没有NSP</li>
+<li>DOC-SENTENCES：来自于当个文档的句子，没有NSP  </li>
+</ul>
+<p>&emsp;&emsp;具体的结果如下：去除NSP任务后，效果有所提升；采用同个文档的训练效果比较好<br><img src="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/B75EA588EEDC4EE5A4D423E47E3BA76A/18386" alt="image"></p>
+<h5 id="训练采用更大的batch-size"><a href="#训练采用更大的batch-size" class="headerlink" title="训练采用更大的batch_size"></a>训练采用更大的batch_size</h5><p>&emsp;&emsp;相比于BERT采用256的batch_size，本论文实验了更大的batch的影响，同时控制了模型对每个训练样本的利用次数是一致的，发现采用更大的batch，同时提高学习率，可以在一定程度提升模型效果。<br><img src="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/16FA83BAE59B43C6A98AFFFA6D62F0C2/18402" alt="image"></p>
+<h5 id="文本编码方式"><a href="#文本编码方式" class="headerlink" title="文本编码方式"></a>文本编码方式</h5><p>&emsp;&emsp;采用byte-level的BPE代替character-level的BPE</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>&emsp;&emsp;在进行实验的时候，主要把以上四个方面给加入到模型中，主要是：动态掩码；去除NSP；大batch；byte-level的BPE。同时还实验了预训练数据集的大小和每个样本的训练轮数。结果表明更多数据和更长的训练时间可以提高模型效果（这篇论文除了烧钱，得到了一个没有太多含金量的结论）。<br><img src="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/4AD6BA2596E541189DD8D7AE3F51EA73/18421" alt="image"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># 学习笔记</a>
+          </div>
+
+        
+
+
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文简介"><span class="nav-number">1.</span> <span class="nav-text">论文简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BERT介绍"><span class="nav-number">2.</span> <span class="nav-text">BERT介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#原BERT的参数设置"><span class="nav-number">2.0.1.</span> <span class="nav-text">原BERT的参数设置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#本文复现BERT的参数设置"><span class="nav-number">2.0.2.</span> <span class="nav-text">本文复现BERT的参数设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文改进"><span class="nav-number">3.</span> <span class="nav-text">论文改进</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#动态掩码和静态掩码"><span class="nav-number">3.0.1.</span> <span class="nav-text">动态掩码和静态掩码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#不同文档分割方式和NSP任务"><span class="nav-number">3.0.2.</span> <span class="nav-text">不同文档分割方式和NSP任务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#训练采用更大的batch-size"><span class="nav-number">3.0.3.</span> <span class="nav-text">训练采用更大的batch_size</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#文本编码方式"><span class="nav-number">3.0.4.</span> <span class="nav-text">文本编码方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Linhao</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Linhao</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

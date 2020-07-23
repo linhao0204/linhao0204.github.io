@@ -176,7 +176,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-07-23 13:51:13" itemprop="dateModified" datetime="2020-07-23T13:51:13+08:00">2020-07-23</time>
+                <time title="Modified: 2020-07-23 14:49:16" itemprop="dateModified" datetime="2020-07-23T14:49:16+08:00">2020-07-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -205,7 +205,7 @@
 <h5 id="原BERT的参数设置"><a href="#原BERT的参数设置" class="headerlink" title="原BERT的参数设置"></a>原BERT的参数设置</h5><ul>
 <li>采用Adam优化器，$beta_1=0.9, beta_2=0.999, \varepsilon=1e-6$，学习率采用的是warm up策略，前10000个 step达到峰值1e-4，后面再递减</li>
 <li>所有层的dropout都是0.1</li>
-<li>模型训练1000000个step，batch为256，句长为512<br><img src="/images/pasted-0.png" alt="upload successful"><br><img src="https://raw.githubusercontent.com/linhao0204/images_bed/master/images/ALBERT-SOP.png" alt="image"></li>
+<li>模型训练1000000个step，batch为256，句长为512</li>
 </ul>
 <h5 id="本文复现BERT的参数设置"><a href="#本文复现BERT的参数设置" class="headerlink" title="本文复现BERT的参数设置"></a>本文复现BERT的参数设置</h5><ul>
 <li>根据具体设置调整了峰值学习率和warmup步数</li>
@@ -213,7 +213,7 @@
 <li>在batch比较大的情况下，设置$beta_2=0.98$有利于提高训练稳定性</li>
 <li>训练BERT的时候前90%的时间是采用较短的句长？？？（但是在bert源码中没看到这部分代码，只是在生成mask训练样本的时候，会有10%生成较短的文本，代码给出的解释是为了使bert在短文本问题中也能使用，而不会受限于512的文本长度）。在本文中均采用512长度的文本进行训练</li>
 </ul>
-<h3 id="论文改进"><a href="#论文改进" class="headerlink" title="论文改进"></a>论文改进</h3><h5 id="动态掩码和静态掩码"><a href="#动态掩码和静态掩码" class="headerlink" title="动态掩码和静态掩码"></a>动态掩码和静态掩码</h5><p>&emsp;&emsp;BERT是在训练之前就已经将训练数据处理好了，本论文是在训练过程中对数据进行mask，从结果来看动态掩码效果有提升，但不是很明显。<br><img src="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/60B7B39CF3C2416C9B6C6236ED935C8F/18342" alt="image"></p>
+<h3 id="论文改进"><a href="#论文改进" class="headerlink" title="论文改进"></a>论文改进</h3><h5 id="动态掩码和静态掩码"><a href="#动态掩码和静态掩码" class="headerlink" title="动态掩码和静态掩码"></a>动态掩码和静态掩码</h5><p>&emsp;&emsp;BERT是在训练之前就已经将训练数据处理好了，本论文是在训练过程中对数据进行mask，从结果来看动态掩码效果有提升，但不是很明显。<br><img src="/images/roberta-mask.png" alt="image"></p>
 <h5 id="不同文档分割方式和NSP任务"><a href="#不同文档分割方式和NSP任务" class="headerlink" title="不同文档分割方式和NSP任务"></a>不同文档分割方式和NSP任务</h5><p>&emsp;&emsp;分为四种情况进行实验：</p>
 <ul>
 <li>SEGMENT-PAIR+NSP：来自于一个或两个文档的多个句子组成总的输入，和原有的BERT论文一致</li>
@@ -221,10 +221,10 @@
 <li>FULL-SENTENCES：来自于多个文档的句子，不同文档的句子之间用符号分隔，没有NSP</li>
 <li>DOC-SENTENCES：来自于当个文档的句子，没有NSP  </li>
 </ul>
-<p>&emsp;&emsp;具体的结果如下：去除NSP任务后，效果有所提升；采用同个文档的训练效果比较好<br><img src="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/B75EA588EEDC4EE5A4D423E47E3BA76A/18386" alt="image"></p>
-<h5 id="训练采用更大的batch-size"><a href="#训练采用更大的batch-size" class="headerlink" title="训练采用更大的batch_size"></a>训练采用更大的batch_size</h5><p>&emsp;&emsp;相比于BERT采用256的batch_size，本论文实验了更大的batch的影响，同时控制了模型对每个训练样本的利用次数是一致的，发现采用更大的batch，同时提高学习率，可以在一定程度提升模型效果。<br><img src="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/16FA83BAE59B43C6A98AFFFA6D62F0C2/18402" alt="image"></p>
+<p>&emsp;&emsp;具体的结果如下：去除NSP任务后，效果有所提升；采用同个文档的训练效果比较好<br><img src="/images/roberta-nsp.png" alt="image"></p>
+<h5 id="训练采用更大的batch-size"><a href="#训练采用更大的batch-size" class="headerlink" title="训练采用更大的batch_size"></a>训练采用更大的batch_size</h5><p>&emsp;&emsp;相比于BERT采用256的batch_size，本论文实验了更大的batch的影响，同时控制了模型对每个训练样本的利用次数是一致的，发现采用更大的batch，同时提高学习率，可以在一定程度提升模型效果。<br><img src="/images/roberta-batch.png" alt="image"></p>
 <h5 id="文本编码方式"><a href="#文本编码方式" class="headerlink" title="文本编码方式"></a>文本编码方式</h5><p>&emsp;&emsp;采用byte-level的BPE代替character-level的BPE</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>&emsp;&emsp;在进行实验的时候，主要把以上四个方面给加入到模型中，主要是：动态掩码；去除NSP；大batch；byte-level的BPE。同时还实验了预训练数据集的大小和每个样本的训练轮数。结果表明更多数据和更长的训练时间可以提高模型效果（这篇论文除了烧钱，得到了一个没有太多含金量的结论）。<br><img src="https://note.youdao.com/yws/public/resource/00b9967ccfcc3e9963993ca82045a310/xmlnote/4AD6BA2596E541189DD8D7AE3F51EA73/18421" alt="image"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>&emsp;&emsp;在进行实验的时候，主要把以上四个方面给加入到模型中，主要是：动态掩码；去除NSP；大batch；byte-level的BPE。同时还实验了预训练数据集的大小和每个样本的训练轮数。结果表明更多数据和更长的训练时间可以提高模型效果（这篇论文除了烧钱，得到了一个没有太多含金量的结论）。<br><img src="/images/roberta-train-longer.png" alt="image"></p>
 
       
     </div>

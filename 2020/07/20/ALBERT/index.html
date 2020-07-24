@@ -20,25 +20,26 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="论文简介&amp;emsp;&amp;emsp;这篇论文发现当前的BERT是没有充分训练的，如果经过好好调参的话，BERT是可以比后BERT时代的模型效果要好的。而且由于训练是很耗费资源和时间的，所以很多预训练模型都无法进行系统的比较。&amp;emsp;&amp;emsp;本论文对于BERT的改进主要有以下几点：1、在更多数据上进行更长时间的训练，同时采用更大的batch；2、去除NSP任务；3、在更长句子维度上进行训练；4">
+  <meta name="description" content="论文简介&amp;emsp;&amp;emsp;在预训练的时候，通过增大模型大小可以有效提升模型在下游任务的表现，但是模型大小会受到GPU&#x2F;TPU内存大小和训练时间的限制。为了解决这些问题，我们提出了两个降低模型参数的方法来降低BERT的内存占用以及提升训练速度。实验表明我们模型比原有BERT模型规模更小，同时我们使用了自监督损失来建模句子内部的相关性，能够有效提升模型在具有多个句子输入的下游任务的效果。在具有">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RoBERTa">
-<meta property="og:url" content="http://yoursite.com/2020/07/20/RoBERTa/index.html">
+<meta property="og:title" content="ALBERT">
+<meta property="og:url" content="http://yoursite.com/2020/07/20/ALBERT/index.html">
 <meta property="og:site_name" content="Linhao">
-<meta property="og:description" content="论文简介&amp;emsp;&amp;emsp;这篇论文发现当前的BERT是没有充分训练的，如果经过好好调参的话，BERT是可以比后BERT时代的模型效果要好的。而且由于训练是很耗费资源和时间的，所以很多预训练模型都无法进行系统的比较。&amp;emsp;&amp;emsp;本论文对于BERT的改进主要有以下几点：1、在更多数据上进行更长时间的训练，同时采用更大的batch；2、去除NSP任务；3、在更长句子维度上进行训练；4">
+<meta property="og:description" content="论文简介&amp;emsp;&amp;emsp;在预训练的时候，通过增大模型大小可以有效提升模型在下游任务的表现，但是模型大小会受到GPU&#x2F;TPU内存大小和训练时间的限制。为了解决这些问题，我们提出了两个降低模型参数的方法来降低BERT的内存占用以及提升训练速度。实验表明我们模型比原有BERT模型规模更小，同时我们使用了自监督损失来建模句子内部的相关性，能够有效提升模型在具有多个句子输入的下游任务的效果。在具有">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://yoursite.com/images/roberta-mask.png">
-<meta property="og:image" content="http://yoursite.com/images/roberta-nsp.png">
-<meta property="og:image" content="http://yoursite.com/images/roberta-batch.png">
-<meta property="og:image" content="http://yoursite.com/images/roberta-train-longer.png">
+<meta property="og:image" content="http://yoursite.com/images/ALBERT-model-size.png">
+<meta property="og:image" content="http://yoursite.com/images/ALBERT-result.png">
+<meta property="og:image" content="http://yoursite.com/images/ALBERT-factorization.png">
+<meta property="og:image" content="http://yoursite.com/images/ALBERT-share.png">
+<meta property="og:image" content="http://yoursite.com/images/albert-sop.png">
 <meta property="article:published_time" content="2020-07-20T05:09:00.000Z">
-<meta property="article:modified_time" content="2020-07-23T06:49:16.769Z">
+<meta property="article:modified_time" content="2020-07-24T12:52:26.282Z">
 <meta property="article:author" content="Linhao">
 <meta property="article:tag" content="学习笔记">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/roberta-mask.png">
+<meta name="twitter:image" content="http://yoursite.com/images/ALBERT-model-size.png">
 
-<link rel="canonical" href="http://yoursite.com/2020/07/20/RoBERTa/">
+<link rel="canonical" href="http://yoursite.com/2020/07/20/ALBERT/">
 
 
 <script id="page-configurations">
@@ -51,7 +52,7 @@
   };
 </script>
 
-  <title>RoBERTa | Linhao</title>
+  <title>ALBERT | Linhao</title>
   
 
 
@@ -156,7 +157,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/20/RoBERTa/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/20/ALBERT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -169,7 +170,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          RoBERTa
+          ALBERT
         </h1>
 
         <div class="post-meta">
@@ -186,7 +187,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-07-23 14:49:16" itemprop="dateModified" datetime="2020-07-23T14:49:16+08:00">2020-07-23</time>
+                <time title="Modified: 2020-07-24 20:52:26" itemprop="dateModified" datetime="2020-07-24T20:52:26+08:00">2020-07-24</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -210,31 +211,25 @@
 
       
         <hr>
-<h3 id="论文简介"><a href="#论文简介" class="headerlink" title="论文简介"></a>论文简介</h3><p>&emsp;&emsp;这篇论文发现当前的BERT是没有充分训练的，如果经过好好调参的话，BERT是可以比后BERT时代的模型效果要好的。而且由于训练是很耗费资源和时间的，所以很多预训练模型都无法进行系统的比较。<br>&emsp;&emsp;本论文对于BERT的改进主要有以下几点：1、在更多数据上进行更长时间的训练，同时采用更大的batch；2、去除NSP任务；3、在更长句子维度上进行训练；4、在训练过程中动态调整mask。同时收集了一个新的数据集（CC-NEWS）。</p>
-<h3 id="BERT介绍"><a href="#BERT介绍" class="headerlink" title="BERT介绍"></a>BERT介绍</h3><p>&emsp;&emsp;<strong>MLM任务</strong>,随机选择15%的token进行mask，其中80%替换为MASK，10%保持不变，10%替换为别的token。在BERT中是在整个预训练的数据集中重复10次，即相当于生成10倍的训练样本，保存之后在后面的训练过程中就保持不变了。<br>&emsp;&emsp;<strong>NSP任务</strong>，预测输入的两个句子在原文中是不是上下文的关系。</p>
-<h5 id="原BERT的参数设置"><a href="#原BERT的参数设置" class="headerlink" title="原BERT的参数设置"></a>原BERT的参数设置</h5><ul>
-<li>采用Adam优化器，$beta_1=0.9, beta_2=0.999, \varepsilon=1e-6$，学习率采用的是warm up策略，前10000个 step达到峰值1e-4，后面再递减</li>
-<li>所有层的dropout都是0.1</li>
-<li>模型训练1000000个step，batch为256，句长为512</li>
-</ul>
-<h5 id="本文复现BERT的参数设置"><a href="#本文复现BERT的参数设置" class="headerlink" title="本文复现BERT的参数设置"></a>本文复现BERT的参数设置</h5><ul>
-<li>根据具体设置调整了峰值学习率和warmup步数</li>
-<li>训练过程对Adam优化器的$\varepsilon$参数非常敏感</li>
-<li>在batch比较大的情况下，设置$beta_2=0.98$有利于提高训练稳定性</li>
-<li>训练BERT的时候前90%的时间是采用较短的句长？？？（但是在bert源码中没看到这部分代码，只是在生成mask训练样本的时候，会有10%生成较短的文本，代码给出的解释是为了使bert在短文本问题中也能使用，而不会受限于512的文本长度）。在本文中均采用512长度的文本进行训练</li>
-</ul>
-<h3 id="论文改进"><a href="#论文改进" class="headerlink" title="论文改进"></a>论文改进</h3><h5 id="动态掩码和静态掩码"><a href="#动态掩码和静态掩码" class="headerlink" title="动态掩码和静态掩码"></a>动态掩码和静态掩码</h5><p>&emsp;&emsp;BERT是在训练之前就已经将训练数据处理好了，本论文是在训练过程中对数据进行mask，从结果来看动态掩码效果有提升，但不是很明显。<br><img src="/images/roberta-mask.png" alt="image"></p>
-<h5 id="不同文档分割方式和NSP任务"><a href="#不同文档分割方式和NSP任务" class="headerlink" title="不同文档分割方式和NSP任务"></a>不同文档分割方式和NSP任务</h5><p>&emsp;&emsp;分为四种情况进行实验：</p>
+<h3 id="论文简介"><a href="#论文简介" class="headerlink" title="论文简介"></a>论文简介</h3><p>&emsp;&emsp;在预训练的时候，通过增大模型大小可以有效提升模型在下游任务的表现，但是模型大小会受到GPU/TPU内存大小和训练时间的限制。为了解决这些问题，我们提出了两个降低模型参数的方法来降低BERT的内存占用以及提升训练速度。实验表明我们模型比原有BERT模型规模更小，同时我们使用了自监督损失来建模句子内部的相关性，能够有效提升模型在具有多个句子输入的下游任务的效果。在具有更少参数的情况下，我们的模型在多个任务建立了SOTA的效果。</p>
+<h3 id="待解决的问题和方法"><a href="#待解决的问题和方法" class="headerlink" title="待解决的问题和方法"></a>待解决的问题和方法</h3><p>&emsp;&emsp;本文在原有的BERT的基础上增加了一倍的隐藏层大小，从1024增加到2048，但是从实验结论上来看，模型效果反而下降了，说明单纯增加模型参数并不能提升模型效果。为了在不改变模型结构的条件下减少模型参数，并提升训练速度，本文提出了两种方法。</p>
 <ul>
-<li>SEGMENT-PAIR+NSP：来自于一个或两个文档的多个句子组成总的输入，和原有的BERT论文一致</li>
-<li>SENTENCE-PAIR+NSP：来自于一个或两个文档的单个句子，句子级别的</li>
-<li>FULL-SENTENCES：来自于多个文档的句子，不同文档的句子之间用符号分隔，没有NSP</li>
-<li>DOC-SENTENCES：来自于当个文档的句子，没有NSP  </li>
+<li>对词向量大小进行因式分解，将隐层大小和词向量大小解耦合</li>
+<li>跨层参数共享</li>
+<li>采用SOP（sentence-order prediction）任务代替NSP任务</li>
 </ul>
-<p>&emsp;&emsp;具体的结果如下：去除NSP任务后，效果有所提升；采用同个文档的训练效果比较好<br><img src="/images/roberta-nsp.png" alt="image"></p>
-<h5 id="训练采用更大的batch-size"><a href="#训练采用更大的batch-size" class="headerlink" title="训练采用更大的batch_size"></a>训练采用更大的batch_size</h5><p>&emsp;&emsp;相比于BERT采用256的batch_size，本论文实验了更大的batch的影响，同时控制了模型对每个训练样本的利用次数是一致的，发现采用更大的batch，同时提高学习率，可以在一定程度提升模型效果。<br><img src="/images/roberta-batch.png" alt="image"></p>
-<h5 id="文本编码方式"><a href="#文本编码方式" class="headerlink" title="文本编码方式"></a>文本编码方式</h5><p>&emsp;&emsp;采用byte-level的BPE代替character-level的BPE</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>&emsp;&emsp;在进行实验的时候，主要把以上四个方面给加入到模型中，主要是：动态掩码；去除NSP；大batch；byte-level的BPE。同时还实验了预训练数据集的大小和每个样本的训练轮数。结果表明更多数据和更长的训练时间可以提高模型效果（这篇论文除了烧钱，得到了一个没有太多含金量的结论）。<br><img src="/images/roberta-train-longer.png" alt="image"></p>
+<p>&emsp;&emsp;通过上面两种方法还有正则的效果，并提升了模型训练的稳定性。</p>
+<h3 id="ALBERT"><a href="#ALBERT" class="headerlink" title="ALBERT"></a>ALBERT</h3><h5 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h5><p>&emsp;&emsp;词向量表示大小$E$,编码层数目$L$，隐藏层大小$H$，前向层大小$4H$，attention头数$H/64$。</p>
+<h5 id="词向量矩阵因式分解"><a href="#词向量矩阵因式分解" class="headerlink" title="词向量矩阵因式分解"></a>词向量矩阵因式分解</h5><p>&emsp;&emsp;在BERT，RoBERTa和XLNet中，词向量的大小$E$和隐藏层大小$H$是一样的，但是这个方法会有以下两个问题。</p>
+<ul>
+<li>词向量的大小$E$学习到的是上下文无关的表示，隐藏层大小$H$学习到的是上下文相关的表示，而对于BERT来说模型的能力主要来源于上下文的表示，所以$H$一般有比较大的值，所以将$E$和$H$解耦合能够有效降低参数量</li>
+<li>在实际应用中，模型的词表大小$V$一般都很大，如果$E$的值也比较大的话，那么整个词向量矩阵大小为$V*E$，参数量将非常大，在更新的时候大多数参数都会很少被更新。  </li>
+</ul>
+<p>&emsp;&emsp;基于上面的理由，我们将词向量映射到较小的$E$，然后再映射到$H$，这样就可以打破$E \equiv H$的限制，词向量矩阵的大小从$O(V \times H) $降低到$O(V \times E+E \times H)$，其中$H \gg E$。本质上就是在降低了词向量的大小，然后加上一层全连接层将维度映射到$H$。</p>
+<h5 id="参数共享"><a href="#参数共享" class="headerlink" title="参数共享"></a>参数共享</h5><p>&emsp;&emsp;根据transformer的结构，参数共享可以包括以下几种：1、共享FFN的参数；2、共享attention层的参数；3、同时共享FFN和attention层参数。<br>&emsp;&emsp;同时还比较了BERT和ALBERT输入和输出之间L2距离和cos距离，结果表明在ALBERT中，层与层之间的输入、输出转换更加光滑。</p>
+<h5 id="SOP任务"><a href="#SOP任务" class="headerlink" title="SOP任务"></a>SOP任务</h5><p>&emsp;&emsp;在BERT中除了采用MLM任务，还加入了NSP任务，该任务是判断两个句子是否是连贯的两个句子，正样本是同个文档里连贯的两句话，负样本是从两个不同的文档中分别抽取的句子。有几篇论文讨论了NSP任务的有效性，发现去除NSP任务之后模型效果反而会有提升。<br>&emsp;&emsp;本论文认为NSP任务之所以没有效果是因为这个任务太简单了，这个任务选取了两个不同文档的句子作为负样本，这样就同时为该任务引入了文档主题信息，而主题分类的任务比句子连贯性的任务要简单得多。所以NSP任务并没有起到原有的效果。（而BERT论文在进行消融实验的时候发现NSP任务还是有效果的，RoBERTa论文中认为有可能是在进行消融实验的时候只把NSP任务去除了，但是有部分训练语料的句子对还是随机在两个文档中获取到的，导致效果会降低）<br>&emsp;&emsp;为了解决NSP过于简单的问题，论文中提出了SOP任务，即预测两个句子的顺序是否正常。正样本的产生方法还是和BERT一样，在产生负样本的时候，还是从同个文档中获取到连续的两个句子，然后颠倒两者的顺序。从这可以看出，SOP任务避免引入了主题信息，使模型更加注重于学习句子的连贯性。而且SOP任务训练出来的模型可以在一定程度上解决NSP任务，但是NSP任务却无法解决SOP任务。</p>
+<h3 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h3><p>&emsp;&emsp;1、本论文采用了n-gram掩码，n大小按照以下公式进行选择，n最大为3。<br>$$p(n) = \frac{\frac{1}{n}}{\sum_{k=1}^N\frac{1}{k}}$$</p>
+<p>&emsp;&emsp;2、在进行模型大小调整的时候，主要调整的是宽度而不是深度。<br><img src="/images/ALBERT-model-size.png" alt="image"><br>&emsp;&emsp;3、<strong>从下面结果可以看出来如果只是采用参数共享，不增加模型大小的话，ALBERT的效果是不如BERT的。</strong> 但是通过增加层数和隐层大小，ALBERT在保持参数量低于BERT的前提下，在各个任务上可以得到更优的效果。<br>&emsp;&emsp;由于模型整体结构并没有大改变，ALBERT对于训练速度和推理速度并没有明显提升，只是降低了参数量。(在实验ALBERT和BERT的时候，同样的结构大小，同样的数据，ALBERT训练30个epoch，batch大小为64，，每个样本大约耗时2ms，训练时间为11个小时。BERT训练50个epoch，batch为大小128，每个样本大约耗时2.2ms,训练时间为22个小时。说明ALBERT的训练数据有所提升，但不是很明显)<br><img src="/images/ALBERT-result.png" alt="image"><br>&emsp;&emsp;4、在没有进行参数共享时，词向量大小$E$越大，模型效果越好；但是在参数共享的条件下，$E=128$时效果最佳。<br><img src="/images/ALBERT-factorization.png" alt="image"><br>&emsp;&emsp;5、参数共享对模型效果有损伤，而且这损伤主要来源于FFN参数的共享，attention层参数的共享损伤较少<br><img src="/images/ALBERT-share.png" alt="image"><br>&emsp;&emsp;6、NSP任务对模型效果提升很小，SOP任务对模型效果提升很大<br><img src="/images/albert-sop.png" alt="image"><br>&emsp;&emsp;7、实验了不同深度和宽度的ALBERT，发现不断加大深度和宽度并不能一直提升模型效果，在后面效果会有个下降的过程。其实这应该也是可以理解的，当模型深度和宽度不断增加的时候，模型的训练难度也会增加。<br>&emsp;&emsp;8、同等的训练时间，ALBERT-xxlarge比BERT-large在平均准确率上仍然有1.5%的提升<br>&emsp;&emsp;9、去除dropout对模型效果有提升。</p>
 
     </div>
 
@@ -252,11 +247,11 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2020/07/20/ALBERT/" rel="next" title="ALBERT">
-      ALBERT <i class="fa fa-chevron-right"></i>
+    <a href="/2020/07/20/RoBERTa/" rel="prev" title="RoBERTa">
+      <i class="fa fa-chevron-left"></i> RoBERTa
     </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -315,7 +310,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文简介"><span class="nav-number">1.</span> <span class="nav-text">论文简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BERT介绍"><span class="nav-number">2.</span> <span class="nav-text">BERT介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#原BERT的参数设置"><span class="nav-number">2.0.1.</span> <span class="nav-text">原BERT的参数设置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#本文复现BERT的参数设置"><span class="nav-number">2.0.2.</span> <span class="nav-text">本文复现BERT的参数设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文改进"><span class="nav-number">3.</span> <span class="nav-text">论文改进</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#动态掩码和静态掩码"><span class="nav-number">3.0.1.</span> <span class="nav-text">动态掩码和静态掩码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#不同文档分割方式和NSP任务"><span class="nav-number">3.0.2.</span> <span class="nav-text">不同文档分割方式和NSP任务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#训练采用更大的batch-size"><span class="nav-number">3.0.3.</span> <span class="nav-text">训练采用更大的batch_size</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#文本编码方式"><span class="nav-number">3.0.4.</span> <span class="nav-text">文本编码方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文简介"><span class="nav-number">1.</span> <span class="nav-text">论文简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#待解决的问题和方法"><span class="nav-number">2.</span> <span class="nav-text">待解决的问题和方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ALBERT"><span class="nav-number">3.</span> <span class="nav-text">ALBERT</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#参数说明"><span class="nav-number">3.0.1.</span> <span class="nav-text">参数说明</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#词向量矩阵因式分解"><span class="nav-number">3.0.2.</span> <span class="nav-text">词向量矩阵因式分解</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#参数共享"><span class="nav-number">3.0.3.</span> <span class="nav-text">参数共享</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SOP任务"><span class="nav-number">3.0.4.</span> <span class="nav-text">SOP任务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验"><span class="nav-number">4.</span> <span class="nav-text">实验</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

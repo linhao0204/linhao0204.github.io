@@ -145,6 +145,99 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/20/ALBERT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Linhao">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Linhao">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/20/ALBERT/" class="post-title-link" itemprop="url">ALBERT</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-07-20 13:09:00" itemprop="dateCreated datePublished" datetime="2020-07-20T13:09:00+08:00">2020-07-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-24 20:52:26" itemprop="dateModified" datetime="2020-07-24T20:52:26+08:00">2020-07-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<h3 id="论文简介"><a href="#论文简介" class="headerlink" title="论文简介"></a>论文简介</h3><p>&emsp;&emsp;在预训练的时候，通过增大模型大小可以有效提升模型在下游任务的表现，但是模型大小会受到GPU/TPU内存大小和训练时间的限制。为了解决这些问题，我们提出了两个降低模型参数的方法来降低BERT的内存占用以及提升训练速度。实验表明我们模型比原有BERT模型规模更小，同时我们使用了自监督损失来建模句子内部的相关性，能够有效提升模型在具有多个句子输入的下游任务的效果。在具有更少参数的情况下，我们的模型在多个任务建立了SOTA的效果。</p>
+<h3 id="待解决的问题和方法"><a href="#待解决的问题和方法" class="headerlink" title="待解决的问题和方法"></a>待解决的问题和方法</h3><p>&emsp;&emsp;本文在原有的BERT的基础上增加了一倍的隐藏层大小，从1024增加到2048，但是从实验结论上来看，模型效果反而下降了，说明单纯增加模型参数并不能提升模型效果。为了在不改变模型结构的条件下减少模型参数，并提升训练速度，本文提出了两种方法。</p>
+<ul>
+<li>对词向量大小进行因式分解，将隐层大小和词向量大小解耦合</li>
+<li>跨层参数共享</li>
+<li>采用SOP（sentence-order prediction）任务代替NSP任务</li>
+</ul>
+<p>&emsp;&emsp;通过上面两种方法还有正则的效果，并提升了模型训练的稳定性。</p>
+<h3 id="ALBERT"><a href="#ALBERT" class="headerlink" title="ALBERT"></a>ALBERT</h3><h5 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h5><p>&emsp;&emsp;词向量表示大小$E$,编码层数目$L$，隐藏层大小$H$，前向层大小$4H$，attention头数$H/64$。</p>
+<h5 id="词向量矩阵因式分解"><a href="#词向量矩阵因式分解" class="headerlink" title="词向量矩阵因式分解"></a>词向量矩阵因式分解</h5><p>&emsp;&emsp;在BERT，RoBERTa和XLNet中，词向量的大小$E$和隐藏层大小$H$是一样的，但是这个方法会有以下两个问题。</p>
+<ul>
+<li>词向量的大小$E$学习到的是上下文无关的表示，隐藏层大小$H$学习到的是上下文相关的表示，而对于BERT来说模型的能力主要来源于上下文的表示，所以$H$一般有比较大的值，所以将$E$和$H$解耦合能够有效降低参数量</li>
+<li>在实际应用中，模型的词表大小$V$一般都很大，如果$E$的值也比较大的话，那么整个词向量矩阵大小为$V*E$，参数量将非常大，在更新的时候大多数参数都会很少被更新。  </li>
+</ul>
+<p>&emsp;&emsp;基于上面的理由，我们将词向量映射到较小的$E$，然后再映射到$H$，这样就可以打破$E \equiv H$的限制，词向量矩阵的大小从$O(V \times H) $降低到$O(V \times E+E \times H)$，其中$H \gg E$。本质上就是在降低了词向量的大小，然后加上一层全连接层将维度映射到$H$。</p>
+<h5 id="参数共享"><a href="#参数共享" class="headerlink" title="参数共享"></a>参数共享</h5><p>&emsp;&emsp;根据transformer的结构，参数共享可以包括以下几种：1、共享FFN的参数；2、共享attention层的参数；3、同时共享FFN和attention层参数。<br>&emsp;&emsp;同时还比较了BERT和ALBERT输入和输出之间L2距离和cos距离，结果表明在ALBERT中，层与层之间的输入、输出转换更加光滑。</p>
+<h5 id="SOP任务"><a href="#SOP任务" class="headerlink" title="SOP任务"></a>SOP任务</h5><p>&emsp;&emsp;在BERT中除了采用MLM任务，还加入了NSP任务，该任务是判断两个句子是否是连贯的两个句子，正样本是同个文档里连贯的两句话，负样本是从两个不同的文档中分别抽取的句子。有几篇论文讨论了NSP任务的有效性，发现去除NSP任务之后模型效果反而会有提升。<br>&emsp;&emsp;本论文认为NSP任务之所以没有效果是因为这个任务太简单了，这个任务选取了两个不同文档的句子作为负样本，这样就同时为该任务引入了文档主题信息，而主题分类的任务比句子连贯性的任务要简单得多。所以NSP任务并没有起到原有的效果。（而BERT论文在进行消融实验的时候发现NSP任务还是有效果的，RoBERTa论文中认为有可能是在进行消融实验的时候只把NSP任务去除了，但是有部分训练语料的句子对还是随机在两个文档中获取到的，导致效果会降低）<br>&emsp;&emsp;为了解决NSP过于简单的问题，论文中提出了SOP任务，即预测两个句子的顺序是否正常。正样本的产生方法还是和BERT一样，在产生负样本的时候，还是从同个文档中获取到连续的两个句子，然后颠倒两者的顺序。从这可以看出，SOP任务避免引入了主题信息，使模型更加注重于学习句子的连贯性。而且SOP任务训练出来的模型可以在一定程度上解决NSP任务，但是NSP任务却无法解决SOP任务。</p>
+<h3 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h3><p>&emsp;&emsp;1、本论文采用了n-gram掩码，n大小按照以下公式进行选择，n最大为3。<br>$$p(n) = \frac{\frac{1}{n}}{\sum_{k=1}^N\frac{1}{k}}$$</p>
+<p>&emsp;&emsp;2、在进行模型大小调整的时候，主要调整的是宽度而不是深度。<br><img src="/images/ALBERT-model-size.png" alt="image"><br>&emsp;&emsp;3、<strong>从下面结果可以看出来如果只是采用参数共享，不增加模型大小的话，ALBERT的效果是不如BERT的。</strong> 但是通过增加层数和隐层大小，ALBERT在保持参数量低于BERT的前提下，在各个任务上可以得到更优的效果。<br>&emsp;&emsp;由于模型整体结构并没有大改变，ALBERT对于训练速度和推理速度并没有明显提升，只是降低了参数量。(在实验ALBERT和BERT的时候，同样的结构大小，同样的数据，ALBERT训练30个epoch，batch大小为64，，每个样本大约耗时2ms，训练时间为11个小时。BERT训练50个epoch，batch为大小128，每个样本大约耗时2.2ms,训练时间为22个小时。说明ALBERT的训练数据有所提升，但不是很明显)<br><img src="/images/ALBERT-result.png" alt="image"><br>&emsp;&emsp;4、在没有进行参数共享时，词向量大小$E$越大，模型效果越好；但是在参数共享的条件下，$E=128$时效果最佳。<br><img src="/images/ALBERT-factorization.png" alt="image"><br>&emsp;&emsp;5、参数共享对模型效果有损伤，而且这损伤主要来源于FFN参数的共享，attention层参数的共享损伤较少<br><img src="/images/ALBERT-share.png" alt="image"><br>&emsp;&emsp;6、NSP任务对模型效果提升很小，SOP任务对模型效果提升很大<br><img src="/images/albert-sop.png" alt="image"><br>&emsp;&emsp;7、实验了不同深度和宽度的ALBERT，发现不断加大深度和宽度并不能一直提升模型效果，在后面效果会有个下降的过程。其实这应该也是可以理解的，当模型深度和宽度不断增加的时候，模型的训练难度也会增加。<br>&emsp;&emsp;8、同等的训练时间，ALBERT-xxlarge比BERT-large在平均准确率上仍然有1.5%的提升<br>&emsp;&emsp;9、去除dropout对模型效果有提升。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/20/RoBERTa/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -306,7 +399,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

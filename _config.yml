@@ -5,10 +5,10 @@
 # Site
 title: Linhao
 subtitle: ''
-description: ''
+description: '平时的一些记录和笔记'
 keywords:
 author: Linhao
-language: en
+language: zh-CN
 timezone: ''
 
 # URL
@@ -101,3 +101,19 @@ deploy:
   type: git
   repo: git@github.com:linhao0204/linhao0204.github.io.git
   branch: master
+
+# 搜索页面
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+
+# 统计文章时间
+symbols_count_time:
+  symbols: true
+  time: true
+  total_symbols: true
+  total_time: true
+
+

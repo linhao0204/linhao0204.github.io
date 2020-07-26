@@ -1,5 +1,5 @@
-tags: 学习笔记
-categories: 学习笔记
+tags: 论文阅读
+categories: 论文阅读
 mathjax: true
 date: 2020-07-20 13:09:00
 ---

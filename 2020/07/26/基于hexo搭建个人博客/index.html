@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="环境依赖&amp;emsp;&amp;emsp;本文记录下个人博客搭建的过程，是在mac系统搭建的博客，而且强依赖于github。默认需要以下条件都准备好了。搭建完成后的效果可以参考这里。  brew，mac系统的安装包管理，具体安装可以参考网上教程 github账号，而且熟悉基本的git操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于hexo搭建个人博客">
+<meta property="og:url" content="http://yoursite.com/2020/07/26/%E5%9F%BA%E4%BA%8Ehexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:site_name" content="Linhao">
+<meta property="og:description" content="环境依赖&amp;emsp;&amp;emsp;本文记录下个人博客搭建的过程，是在mac系统搭建的博客，而且强依赖于github。默认需要以下条件都准备好了。搭建完成后的效果可以参考这里。  brew，mac系统的安装包管理，具体安装可以参考网上教程 github账号，而且熟悉基本的git操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-26T09:23:00.000Z">
+<meta property="article:modified_time" content="2020-07-26T14:26:32.913Z">
+<meta property="article:author" content="Linhao">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/07/26/%E5%9F%BA%E4%BA%8Ehexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>基于hexo搭建个人博客 | Linhao</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Linhao</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/26/%E5%9F%BA%E4%BA%8Ehexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Linhao">
+      <meta itemprop="description" content="平时的一些记录和笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Linhao">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于hexo搭建个人博客
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-07-26 17:23:00 / 修改时间：22:26:32" itemprop="dateCreated datePublished" datetime="2020-07-26T17:23:00+08:00">2020-07-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="环境依赖"><a href="#环境依赖" class="headerlink" title="环境依赖"></a>环境依赖</h4><p>&emsp;&emsp;本文记录下个人博客搭建的过程，是在mac系统搭建的博客，而且强依赖于github。默认需要以下条件都准备好了。搭建完成后的效果可以参考<a href="https://linhao0204.github.io/" target="_blank" rel="noopener">这里</a>。</p>
+<ul>
+<li>brew，mac系统的安装包管理，具体安装可以参考网上教程</li>
+<li>github账号，而且熟悉基本的git操作<a id="more"></a>
+
+</li>
+</ul>
+<h4 id="新建git仓库"><a href="#新建git仓库" class="headerlink" title="新建git仓库"></a>新建git仓库</h4><p>&emsp;&emsp;新建一个repository，并且名字需要为*.github.io，其中*为github的用户名。比如我的用户名是linhao0204，所以repository为linhao0204.github.io，而且必须为public。<br>&emsp;&emsp;新建完成后，在本地安装git，然后将仓库clone到本地。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install git</span><br><span class="line">git clone 你的仓库地址</span><br></pre></td></tr></table></figure>
+<h4 id="hexo"><a href="#hexo" class="headerlink" title="hexo"></a>hexo</h4><p>&emsp;&emsp;我们博客的搭建依赖于hexo，hexo是一个博客框架，我们只要在特定的文件夹下编写我们的博客就可以了，bexo可以帮助我们编译并上传部署到服务器上，我们这里采用的是github.io当做我们博客的服务器，hexo的具体介绍可以见<a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">这里</a>。</p>
+<h5 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h5><p>&emsp;&emsp;hexo是基于node.js的，所以需要安装node.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install node</span><br><span class="line">npm -v  # 检查是否安装完成</span><br></pre></td></tr></table></figure>
+<h5 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br><span class="line">hexo init linhao0204.github.io  # 初始化hexo博客</span><br><span class="line">hexo g  # 编译生成博客</span><br><span class="line">hexo s  # 在本地预览博客</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在浏览器上输入<code>http://localhost:4000/</code>就可以在本地访问我们自己搭建的博客了。</p>
+<h5 id="部署到git"><a href="#部署到git" class="headerlink" title="部署到git"></a>部署到git</h5><p>&emsp;&emsp;上面是部署在本地，但是我们要将自己的博客部署到github的服务器上，和我们前面创建的git仓库关联起来。在根目录的站点配置文件<code>_config.yml</code>中搜索<code>deploy</code>加入以下配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@github.com:linhao0204&#x2F;linhao0204.github.io.git  # 这里要换成上面创建的git仓库</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;同时需要在当前博客目录下安装部署插件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save  # 安装部署插件</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;然后在当前博客目录下执行<code>deploy d</code>就可以部署到git服务器上了，在<code>https://你的git用户名.github.io/</code>就可以访问了。<br>&emsp;&emsp;到了这里的话博客的框架就搭建完成，有了个雏形了，下面根据我们个人需求进行修改。</p>
+<h4 id="个人优化"><a href="#个人优化" class="headerlink" title="个人优化"></a>个人优化</h4><h5 id="修改站点信息"><a href="#修改站点信息" class="headerlink" title="修改站点信息"></a>修改站点信息</h5><p>&emsp;&emsp;上面完成的博客信息都是默认的，通过修改<code>_config.yml</code>配置文件可以更新为自己的信息，我自己修改的字段如下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Site</span><br><span class="line">title: Linhao  # 博客名称</span><br><span class="line">subtitle: &#39;&#39;</span><br><span class="line">description: &#39;平时的一些记录和笔记&#39;  # 个人描述</span><br><span class="line">keywords:</span><br><span class="line">author: Linhao</span><br><span class="line">language: zh-CN  # 这字段可以选择博客显示为中文或者英文</span><br><span class="line">timezone: &#39;&#39;</span><br></pre></td></tr></table></figure>
+<h5 id="修改主题"><a href="#修改主题" class="headerlink" title="修改主题"></a>修改主题</h5><p>&emsp;&emsp;hexo可以根据自己喜好选择不同的博客主题，我选择的是<a href="https://github.com/theme-next/hexo-theme-next" target="_blank" rel="noopener">next主题</a>，将该主题clone下来到<code>theme/next</code>之后，需要修改站点配置文件<code>_config.yml</code>，将配置文件中的<code>theme:  landscape</code>改为<code>theme: next</code>。然后重新部署后就可以生效。<br>&emsp;&emsp;前面一直说到站点配置文件，在<code>theme/next/</code>中也有配置文件<code>_config.yml</code>，称之为主题配置文件，这里将主题配置文件里将用到的一些配置进行说明。</p>
+<h6 id="修改主题排版"><a href="#修改主题排版" class="headerlink" title="修改主题排版"></a>修改主题排版</h6><p>&emsp;&emsp;next主题有多个排版，通过修改<code>Schemes</code>可以选择对应排版，我选择的是<code>Pisces</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Schemes</span><br><span class="line"># scheme: Muse</span><br><span class="line">#scheme: Mist</span><br><span class="line">scheme: Pisces</span><br><span class="line">#scheme: Gemini</span><br></pre></td></tr></table></figure>
+<h6 id="菜单栏显示"><a href="#菜单栏显示" class="headerlink" title="菜单栏显示"></a>菜单栏显示</h6><p>&emsp;&emsp;通过修改<code>menu</code>中的配置，可以在菜单栏里添加自己需要的模块，添加完成后需要通过<code>hexo new page &quot;categories&quot;</code>来生成对应的主页，在<code>source/</code>目录下会生成对应目录<code>categories</code>。然年通过菜单栏点击进去后会进入对应的网页。这里需要注意的是需要在生成的<code>source/categories/index.md</code>文件中添加<code>type: &quot;categories&quot;</code>，否则添加的类别将不会自动更新。<code>tags</code>目录也是类似的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: &#x2F; || fa fa-home</span><br><span class="line">  #about: &#x2F;about&#x2F; || fa fa-user</span><br><span class="line">  # tags: &#x2F;tags&#x2F; || fa fa-tags</span><br><span class="line">  categories: &#x2F;categories&#x2F; || fa fa-th</span><br><span class="line">  archives: &#x2F;archives&#x2F; || fa fa-archive</span><br></pre></td></tr></table></figure>
+<h6 id="修改头像"><a href="#修改头像" class="headerlink" title="修改头像"></a>修改头像</h6><p>&emsp;&emsp;头像存放在<code>/themes/next/source/images/</code>目录下，将自己的头像放到该目录下之后，修改配置文件中的以下字段即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">avatar:</span><br><span class="line">  # Replace the default image and set the url here.</span><br><span class="line">  url: &#x2F;images&#x2F;avatar.jpeg  # 换为自己的头像文件名</span><br></pre></td></tr></table></figure>
+<h6 id="增加社交账号"><a href="#增加社交账号" class="headerlink" title="增加社交账号"></a>增加社交账号</h6><p>&emsp;&emsp;在配置文件中搜索<code>Social Links</code>，选择对应的选项之后即可。</p>
+<h6 id="搜索和增加文章概况"><a href="#搜索和增加文章概况" class="headerlink" title="搜索和增加文章概况"></a>搜索和增加文章概况</h6><p>&emsp;&emsp;如果博客中文章过多的话，next支持本地搜索，通过安装<code>npm install hexo-generator-searchdb --save</code>，然后在配置文件中修改<code>local_search</code>为<code>True</code>，最后需要在站点配置文件<code>_config.yml</code>（注意不是主题配置文件，这部分修改的默认都在主题配置里，这里是站点配置文件）添加以下配置。重启后就可以生效了，有的生效时间会比较久，需要耐心等待。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 搜索页面</span><br><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  limit: 10000</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;next也支持统计每篇博文的字数，并显示大约阅读时长，安装<code>npm install hexo-wordcount --save</code>和<code>npm install hexo-symbols-count-time --save</code>,然后在配置文件中将<code>symbols_count_time</code>设置为<code>True</code>，最后也需要在站点配置文件里添加以下配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 统计文章时间</span><br><span class="line">symbols_count_time:</span><br><span class="line">  symbols: true</span><br><span class="line">  time: true</span><br><span class="line">  total_symbols: true</span><br><span class="line">  total_time: true</span><br></pre></td></tr></table></figure>
+<h6 id="博文预览"><a href="#博文预览" class="headerlink" title="博文预览"></a>博文预览</h6><p>&emsp;&emsp;next主题默认在首页会把博文全文都展示出来，这样在博文比较多的时候会比较乱，所以我们可以开启预览的功能，就是在首页只显示博文的部分内容，这个可以通过在博文中加入<code>&lt;!--more--&gt;</code>，这样首页只会显示之前的部分内容。</p>
+<h5 id="开启gitalk评论"><a href="#开启gitalk评论" class="headerlink" title="开启gitalk评论"></a>开启gitalk评论</h5><p>&emsp;&emsp;如果需要在博文中支持评论，next支持各种方式实现，我选用的是gitalk，这个需要我们在github上申请一个<code>OAuth Apps</code>和新建一个仓库用于保存评论。</p>
+<h6 id="申请Apps"><a href="#申请Apps" class="headerlink" title="申请Apps"></a>申请Apps</h6><p>&emsp;&emsp;在自己的github主页，通过右上角的<code>setting-Developer settings-Developer settings</code>即可申请，可以按照以下填写信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Application name: # 可以随意填写</span><br><span class="line">Homepage URL: # 博客主页，比如我的是https:&#x2F;&#x2F;linhao0204.github.io&#x2F;</span><br><span class="line">Authorization callback URL: # 填的也是https:&#x2F;&#x2F;linhao0204.github.io&#x2F;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;申请之后生成一个<code>Client ID</code>和<code>Client Secret</code>，后面在修改配置文件的时候会用到这两个。</p>
+<h6 id="申请仓库"><a href="#申请仓库" class="headerlink" title="申请仓库"></a>申请仓库</h6><p>&emsp;&emsp;和前面申请仓库的流程是一致的，可以随意命名，比如我的是<code>blog-comment</code>。</p>
+<h6 id="修改配置"><a href="#修改配置" class="headerlink" title="修改配置"></a>修改配置</h6><p>&emsp;&emsp;按照以下修改主题配置文件，重新部署后，登录github账号后即可生效。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 选择支持评论的方式，这里采用gitalk</span><br><span class="line">comments:</span><br><span class="line">  # Available values: tabs | buttons</span><br><span class="line">  style: tabs</span><br><span class="line">  # Choose a comment system to be displayed by default.</span><br><span class="line">  # Available values: changyan | disqus | disqusjs | gitalk | livere | valine</span><br><span class="line">  active: gitalk</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># Gitalk</span><br><span class="line"># For more information: https:&#x2F;&#x2F;gitalk.github.io, https:&#x2F;&#x2F;github.com&#x2F;gitalk&#x2F;gitalk</span><br><span class="line">gitalk:</span><br><span class="line">  enable: true</span><br><span class="line">  github_id: linhao0204 # 个人的github用户名</span><br><span class="line">  id: location.pathname</span><br><span class="line">  repo: blog-comment # 这是上面新建的仓库名</span><br><span class="line">  client_id:  # 申请Apps时获取到的id</span><br><span class="line">  client_secret:  # 申请Apps时获取到的密码</span><br><span class="line">  admin_user: [&quot;linhao0204&quot;] # 这里需要增加管理员用户，可以初始化issue，否则会提示”未找到相关的 Issues 进行评论“</span><br><span class="line">  distraction_free_mode: true # Facebook-like distraction free mode</span><br><span class="line">  # Gitalk&#39;s display language depends on user&#39;s browser or system environment</span><br><span class="line">  # If you want everyone visiting your site to see a uniform language, you can set a force language value</span><br><span class="line">  # Available values: en | es-ES | fr | ru | zh-CN | zh-TW</span><br><span class="line">  language: zh-CN</span><br></pre></td></tr></table></figure>
+<h5 id="支持mathjax"><a href="#支持mathjax" class="headerlink" title="支持mathjax"></a>支持mathjax</h5><p>&emsp;&emsp;如果博文中需要支持公式编辑的话，需要在站点配置文件中开启支持mathjax，同时也需要在博文头部添加<code>mathjax: true</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">math:</span><br><span class="line">  per_page: false  # 由于公式显示会比较耗时，只在有需要的博文中才使用，所以这里置为false</span><br><span class="line">  mathjax:</span><br><span class="line">    enable: true</span><br><span class="line">    # See: https:&#x2F;&#x2F;mhchem.github.io&#x2F;MathJax-mhchem&#x2F;</span><br><span class="line">    mhchem: true</span><br></pre></td></tr></table></figure>
+<h5 id="博文编辑器"><a href="#博文编辑器" class="headerlink" title="博文编辑器"></a>博文编辑器</h5><p>&emsp;&emsp;在编辑markdown文件中，比较痛苦的就是图片和预览。往markdown中添加图片，picgo可以实现复制，然后上传直接获取图片链接，最后可以直接将链接拷贝到文档中，算是比较方便的，但是需要一个合适的图床。网上有很多图床教程，别人推荐比较多的是采用七牛云，但是得实名注册，也有使用github作为图床的，但是最近好像不能使用了。所以我还是将图片放在github的项目下，图片也不会有很多。  &emsp;&emsp;hexo提供了一个网页插件，通过<code>npm install hexo-admin --save</code>安装之后就可以在<code>http://localhost:4000/admin</code>上直接编辑博文了。这个插件的好处就是编辑markdown的时候，可以直接将图片拷贝到文章里，然后会直接将图片保存到<code>source/images/</code>下，非常方便。</p>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><h5 id="项目下的-gitignore文件"><a href="#项目下的-gitignore文件" class="headerlink" title="项目下的.gitignore文件"></a>项目下的.gitignore文件</h5><p>&emsp;&emsp;项目下有部分文件不是必须的，可以不用提交到git上，比如<code>node_modules</code>文件夹下的东西只是用于本地编译。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 忽略一些本地编译的东西</span><br><span class="line">public&#x2F;</span><br><span class="line">db.json</span><br><span class="line">.idea&#x2F;</span><br><span class="line">.deploy_git&#x2F;</span><br><span class="line">node_modules&#x2F;</span><br><span class="line">package.json</span><br><span class="line">package-lock.json</span><br><span class="line"></span><br><span class="line"># mac系统的东西</span><br><span class="line">*.DS_Store</span><br></pre></td></tr></table></figure>
+<h5 id="sublime支持markdown实时预览和mathjax"><a href="#sublime支持markdown实时预览和mathjax" class="headerlink" title="sublime支持markdown实时预览和mathjax"></a>sublime支持markdown实时预览和mathjax</h5><p>&emsp;&emsp;因为我刚开始打算采用sublime编辑器作为md编辑器，所以也看了下相关配置，这里记录一下。</p>
+<h6 id="支持markdown实时预览"><a href="#支持markdown实时预览" class="headerlink" title="支持markdown实时预览"></a>支持markdown实时预览</h6><ul>
+<li>打开sublime，通过组合键<code>Ctrl+Shift+P</code>调出命令面板</li>
+<li>输入<code>Package Control: Install Package</code>，回车</li>
+<li>分别输入<code>MarkdownEditing</code>，<code>MarkdownPreview</code>，<code>LiveReload</code>后回车即可安装</li>
+</ul>
+<p>&emsp;&emsp;<code>MarkdownEditing</code>是md文本编辑插件。<code>MarkdownPreview</code>支持网页预览，但是不会实时自动更新，通过在<code>Preferences -&gt; Key Bindings</code>添加以下语句后，通过快捷键<code>&quot;command+m&quot;</code>就可以进行预览。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">	&#123; &quot;keys&quot;: [&quot;command+m&quot;], &quot;command&quot;: &quot;markdown_preview&quot;, &quot;args&quot;: &#123;&quot;target&quot;: &quot;browser&quot;, &quot;parser&quot;:&quot;markdown&quot;&#125;  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;为了实现实时预览，就需要安装<code>LiveReload</code>了。安装完成后需要检查<code>Preferences -&gt; Package Settings -&gt; Markdown Preview -&gt; setting</code>配置文件中的<code>enable_autoreload</code>是否为<code>True</code>。同时需要通过<code>Preferences -&gt; Package Settings -&gt; LiveReload -&gt; Plugins -&gt; Enable/disable plugins</code>将实时预览功能开启。这样设置之后，每次保存之后网页就可以实时预览了。</p>
+<h6 id="支持mathjax-1"><a href="#支持mathjax-1" class="headerlink" title="支持mathjax"></a>支持mathjax</h6><p>&emsp;&emsp;在预览的时候，公式无法正常显示，需要在<code>Markdown Preview</code>的<code>user setting</code>中添加以下配置。</p>
+<details>
+  <summary>展开</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;enable_mathjax&quot;: true,</span><br><span class="line">    &quot;js&quot;: [</span><br><span class="line">    	&quot;https:&#x2F;&#x2F;cdnjs.cloudflare.com&#x2F;ajax&#x2F;libs&#x2F;mathjax&#x2F;2.7.1&#x2F;MathJax.js&quot;,</span><br><span class="line">        &quot;res:&#x2F;&#x2F;MarkdownPreview&#x2F;js&#x2F;math_config.js&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;markdown_extensions&quot;: [</span><br><span class="line">        &#x2F;&#x2F; Python Markdown Extra with SuperFences.</span><br><span class="line">        &#x2F;&#x2F; You can&#39;t include &quot;extra&quot; and &quot;superfences&quot;</span><br><span class="line">        &#x2F;&#x2F; as &quot;fenced_code&quot; can not be included with &quot;superfences&quot;,</span><br><span class="line">        &#x2F;&#x2F; so we include the pieces separately.</span><br><span class="line">        &quot;markdown.extensions.footnotes&quot;,</span><br><span class="line">        &quot;markdown.extensions.attr_list&quot;,</span><br><span class="line">        &quot;markdown.extensions.def_list&quot;,</span><br><span class="line">        &quot;markdown.extensions.tables&quot;,</span><br><span class="line">        &quot;markdown.extensions.abbr&quot;,</span><br><span class="line">        &quot;pymdownx.betterem&quot;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;markdown.extensions.codehilite&quot;: &#123;</span><br><span class="line">                &quot;guess_lang&quot;: false</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#x2F;&#x2F; Extra&#39;s Markdown parsing in raw HTML cannot be</span><br><span class="line">        &#x2F;&#x2F; included by itself, but &quot;pymdownx&quot; exposes it so we can.</span><br><span class="line">        &quot;pymdownx.extrarawhtml&quot;,</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; More default Python Markdown extensions</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;markdown.extensions.toc&quot;:</span><br><span class="line">            &#123;</span><br><span class="line">                &quot;permalink&quot;: &quot;\ue157&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;markdown.extensions.meta&quot;,</span><br><span class="line">        &quot;markdown.extensions.sane_lists&quot;,</span><br><span class="line">        &quot;markdown.extensions.smarty&quot;,</span><br><span class="line">        &quot;markdown.extensions.wikilinks&quot;,</span><br><span class="line">        &quot;markdown.extensions.admonition&quot;,</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; PyMdown extensions that help give a GitHub-ish feel</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;pymdownx.superfences&quot;: &#123; &#x2F;&#x2F; Nested fences and UML support</span><br><span class="line">                &quot;custom_fences&quot;: [</span><br><span class="line">                    &#123;</span><br><span class="line">                        &quot;name&quot;: &quot;flow&quot;,</span><br><span class="line">                        &quot;class&quot;: &quot;uml-flowchart&quot;,</span><br><span class="line">                        &quot;format&quot;: &#123;&quot;!!python&#x2F;name&quot;: &quot;pymdownx.superfences.fence_code_format&quot;&#125;</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &#123;</span><br><span class="line">                        &quot;name&quot;: &quot;sequence&quot;,</span><br><span class="line">                        &quot;class&quot;: &quot;uml-sequence-diagram&quot;,</span><br><span class="line">                        &quot;format&quot;: &#123;&quot;!!python&#x2F;name&quot;: &quot;pymdownx.superfences.fence_code_format&quot;&#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;pymdownx.magiclink&quot;: &#123;   &#x2F;&#x2F; Auto linkify URLs and email addresses</span><br><span class="line">                &quot;repo_url_shortener&quot;: true,</span><br><span class="line">                &quot;repo_url_shorthand&quot;: true</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;pymdownx.tasklist&quot;,     &#x2F;&#x2F; Task lists</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;pymdownx.tilde&quot;: &#123;  &#x2F;&#x2F; Provide ~~delete~~</span><br><span class="line">                &quot;subscript&quot;: false</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;pymdownx.emoji&quot;: &#123;  &#x2F;&#x2F; Provide GitHub&#39;s emojis</span><br><span class="line">                &quot;emoji_index&quot;: &#123;&quot;!!python&#x2F;name&quot;: &quot;pymdownx.emoji.gemoji&quot;&#125;,</span><br><span class="line">                &quot;emoji_generator&quot;: &#123;&quot;!!python&#x2F;name&quot;: &quot;pymdownx.emoji.to_png&quot;&#125;,</span><br><span class="line">                &quot;alt&quot;: &quot;short&quot;,</span><br><span class="line">                &quot;options&quot;: &#123;</span><br><span class="line">                    &quot;attributes&quot;: &#123;</span><br><span class="line">                        &quot;align&quot;: &quot;absmiddle&quot;,</span><br><span class="line">                        &quot;height&quot;: &quot;20px&quot;,</span><br><span class="line">                        &quot;width&quot;: &quot;20px&quot;</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;image_path&quot;: &quot;https:&#x2F;&#x2F;assets-cdn.github.com&#x2F;images&#x2F;icons&#x2F;emoji&#x2F;unicode&#x2F;&quot;,</span><br><span class="line">                    &quot;non_standard_image_path&quot;: &quot;https:&#x2F;&#x2F;assets-cdn.github.com&#x2F;images&#x2F;icons&#x2F;emoji&#x2F;&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;pymdownx.arithmatex&quot;: &#123; </span><br><span class="line">                &quot;generic&quot;: true </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># 学习笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/20/ALBERT/" rel="prev" title="ALBERT">
+      <i class="fa fa-chevron-left"></i> ALBERT
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#环境依赖"><span class="nav-number">1.</span> <span class="nav-text">环境依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#新建git仓库"><span class="nav-number">2.</span> <span class="nav-text">新建git仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hexo"><span class="nav-number">3.</span> <span class="nav-text">hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#安装Node-js"><span class="nav-number">3.1.</span> <span class="nav-text">安装Node.js</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装hexo"><span class="nav-number">3.2.</span> <span class="nav-text">安装hexo</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#部署到git"><span class="nav-number">3.3.</span> <span class="nav-text">部署到git</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#个人优化"><span class="nav-number">4.</span> <span class="nav-text">个人优化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#修改站点信息"><span class="nav-number">4.1.</span> <span class="nav-text">修改站点信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#修改主题"><span class="nav-number">4.2.</span> <span class="nav-text">修改主题</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#修改主题排版"><span class="nav-number">4.2.1.</span> <span class="nav-text">修改主题排版</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#菜单栏显示"><span class="nav-number">4.2.2.</span> <span class="nav-text">菜单栏显示</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#修改头像"><span class="nav-number">4.2.3.</span> <span class="nav-text">修改头像</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#增加社交账号"><span class="nav-number">4.2.4.</span> <span class="nav-text">增加社交账号</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#搜索和增加文章概况"><span class="nav-number">4.2.5.</span> <span class="nav-text">搜索和增加文章概况</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#博文预览"><span class="nav-number">4.2.6.</span> <span class="nav-text">博文预览</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#开启gitalk评论"><span class="nav-number">4.3.</span> <span class="nav-text">开启gitalk评论</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#申请Apps"><span class="nav-number">4.3.1.</span> <span class="nav-text">申请Apps</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#申请仓库"><span class="nav-number">4.3.2.</span> <span class="nav-text">申请仓库</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#修改配置"><span class="nav-number">4.3.3.</span> <span class="nav-text">修改配置</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#支持mathjax"><span class="nav-number">4.4.</span> <span class="nav-text">支持mathjax</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#博文编辑器"><span class="nav-number">4.5.</span> <span class="nav-text">博文编辑器</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他"><span class="nav-number">5.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#项目下的-gitignore文件"><span class="nav-number">5.1.</span> <span class="nav-text">项目下的.gitignore文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sublime支持markdown实时预览和mathjax"><span class="nav-number">5.2.</span> <span class="nav-text">sublime支持markdown实时预览和mathjax</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#支持markdown实时预览"><span class="nav-number">5.2.1.</span> <span class="nav-text">支持markdown实时预览</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#支持mathjax-1"><span class="nav-number">5.2.2.</span> <span class="nav-text">支持mathjax</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Linhao"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Linhao</p>
+  <div class="site-description" itemprop="description">平时的一些记录和笔记</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/linhao0204" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;linhao0204" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Linhao</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">14k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">12 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '8c98e40fd458f0269c71',
+      clientSecret: '10a43dae205a9c5c8afd784fb61ea896c8a15f2d',
+      repo        : 'blog-comment',
+      owner       : 'linhao0204',
+      admin       : ['linhao0204'],
+      id          : 'cbcae4f1a7566654833c41722fd9ad96',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

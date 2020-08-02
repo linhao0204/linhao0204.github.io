@@ -20,25 +20,19 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="论文简介&amp;emsp;&amp;emsp;这篇论文发现当前的BERT是没有充分训练的，如果经过好好调参的话，BERT是可以比后BERT时代的模型效果要好的。而且由于训练是很耗费资源和时间的，所以很多预训练模型都无法进行系统的比较。&amp;emsp;&amp;emsp;本论文对于BERT的改进主要有以下几点：1、在更多数据上进行更长时间的训练，同时采用更大的batch；2、去除NSP任务；3、在更长句子维度上进行训练；4">
+  <meta name="description" content="&amp;emsp;&amp;emsp;BLEU (Bilingual Evaluation Understudy), 其意思是双语评估替补。该指标首次提出是用于对机器翻译结果的评估，但是后来越来越多地用于对各种自然语言处理任务的评估。在某些任务中，虽然bleu值不是一个很完美的评估指标，但是由于其计算简单且快速，不需要人工评估，所以对于这些任务还是能够提供一定指导意义的。本文只介绍bleu定义及nltk的使用。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RoBERTa">
-<meta property="og:url" content="http://yoursite.com/2020/07/20/RoBERTa/index.html">
+<meta property="og:title" content="bleu简介">
+<meta property="og:url" content="http://yoursite.com/2020/07/28/bleu%E7%AE%80%E4%BB%8B/index.html">
 <meta property="og:site_name" content="Linhao">
-<meta property="og:description" content="论文简介&amp;emsp;&amp;emsp;这篇论文发现当前的BERT是没有充分训练的，如果经过好好调参的话，BERT是可以比后BERT时代的模型效果要好的。而且由于训练是很耗费资源和时间的，所以很多预训练模型都无法进行系统的比较。&amp;emsp;&amp;emsp;本论文对于BERT的改进主要有以下几点：1、在更多数据上进行更长时间的训练，同时采用更大的batch；2、去除NSP任务；3、在更长句子维度上进行训练；4">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;BLEU (Bilingual Evaluation Understudy), 其意思是双语评估替补。该指标首次提出是用于对机器翻译结果的评估，但是后来越来越多地用于对各种自然语言处理任务的评估。在某些任务中，虽然bleu值不是一个很完美的评估指标，但是由于其计算简单且快速，不需要人工评估，所以对于这些任务还是能够提供一定指导意义的。本文只介绍bleu定义及nltk的使用。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://yoursite.com/images/roberta-mask.png">
-<meta property="og:image" content="http://yoursite.com/images/roberta-nsp.png">
-<meta property="og:image" content="http://yoursite.com/images/roberta-batch.png">
-<meta property="og:image" content="http://yoursite.com/images/roberta-train-longer.png">
-<meta property="article:published_time" content="2020-07-20T05:09:00.000Z">
-<meta property="article:modified_time" content="2020-07-26T09:26:04.705Z">
+<meta property="article:published_time" content="2020-07-28T12:56:49.000Z">
+<meta property="article:modified_time" content="2020-08-02T09:02:56.457Z">
 <meta property="article:author" content="Linhao">
-<meta property="article:tag" content="论文阅读">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/roberta-mask.png">
 
-<link rel="canonical" href="http://yoursite.com/2020/07/20/RoBERTa/">
+<link rel="canonical" href="http://yoursite.com/2020/07/28/bleu%E7%AE%80%E4%BB%8B/">
 
 
 <script id="page-configurations">
@@ -51,7 +45,7 @@
   };
 </script>
 
-  <title>RoBERTa | Linhao</title>
+  <title>bleu简介 | Linhao</title>
   
 
 
@@ -189,7 +183,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/20/RoBERTa/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/28/bleu%E7%AE%80%E4%BB%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -202,7 +196,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          RoBERTa
+          bleu简介
         </h1>
 
         <div class="post-meta">
@@ -212,14 +206,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-07-20 13:09:00" itemprop="dateCreated datePublished" datetime="2020-07-20T13:09:00+08:00">2020-07-20</time>
+              <time title="创建时间：2020-07-28 20:56:49" itemprop="dateCreated datePublished" datetime="2020-07-28T20:56:49+08:00">2020-07-28</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-07-26 17:26:04" itemprop="dateModified" datetime="2020-07-26T17:26:04+08:00">2020-07-26</time>
+                <time title="修改时间：2020-08-02 17:02:56" itemprop="dateModified" datetime="2020-08-02T17:02:56+08:00">2020-08-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -227,7 +221,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" itemprop="url" rel="index"><span itemprop="name">论文阅读</span></a>
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
                 </span>
             </span>
 
@@ -237,14 +231,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.5k</span>
+              <span>2.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -256,33 +250,33 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <hr>
-<h4 id="论文简介"><a href="#论文简介" class="headerlink" title="论文简介"></a>论文简介</h4><p>&emsp;&emsp;这篇论文发现当前的BERT是没有充分训练的，如果经过好好调参的话，BERT是可以比后BERT时代的模型效果要好的。而且由于训练是很耗费资源和时间的，所以很多预训练模型都无法进行系统的比较。<br>&emsp;&emsp;本论文对于BERT的改进主要有以下几点：1、在更多数据上进行更长时间的训练，同时采用更大的batch；2、去除NSP任务；3、在更长句子维度上进行训练；4、在训练过程中动态调整mask。同时收集了一个新的数据集（CC-NEWS）。</p>
+        <p>&emsp;&emsp;BLEU (Bilingual Evaluation Understudy), 其意思是双语评估替补。该指标首次提出是用于对机器翻译结果的评估，但是后来越来越多地用于对各种自然语言处理任务的评估。在某些任务中，虽然bleu值不是一个很完美的评估指标，但是由于其计算简单且快速，不需要人工评估，所以对于这些任务还是能够提供一定指导意义的。本文只介绍bleu定义及nltk的使用。</p>
 <a id="more"></a>
-<h4 id="BERT介绍"><a href="#BERT介绍" class="headerlink" title="BERT介绍"></a>BERT介绍</h4><p>&emsp;&emsp;<strong>MLM任务</strong>,随机选择15%的token进行mask，其中80%替换为MASK，10%保持不变，10%替换为别的token。在BERT中是在整个预训练的数据集中重复10次，即相当于生成10倍的训练样本，保存之后在后面的训练过程中就保持不变了。<br>&emsp;&emsp;<strong>NSP任务</strong>，预测输入的两个句子在原文中是不是上下文的关系。</p>
-<h5 id="原BERT的参数设置"><a href="#原BERT的参数设置" class="headerlink" title="原BERT的参数设置"></a>原BERT的参数设置</h5><ul>
-<li>采用Adam优化器，$beta_1=0.9, beta_2=0.999, \varepsilon=1e-6$，学习率采用的是warm up策略，前10000个 step达到峰值1e-4，后面再递减</li>
-<li>所有层的dropout都是0.1</li>
-<li>模型训练1000000个step，batch为256，句长为512</li>
-</ul>
-<h5 id="本文复现BERT的参数设置"><a href="#本文复现BERT的参数设置" class="headerlink" title="本文复现BERT的参数设置"></a>本文复现BERT的参数设置</h5><ul>
-<li>根据具体设置调整了峰值学习率和warmup步数</li>
-<li>训练过程对Adam优化器的$\varepsilon$参数非常敏感</li>
-<li>在batch比较大的情况下，设置$beta_2=0.98$有利于提高训练稳定性</li>
-<li>训练BERT的时候前90%的时间是采用较短的句长？？？（但是在bert源码中没看到这部分代码，只是在生成mask训练样本的时候，会有10%生成较短的文本，代码给出的解释是为了使bert在短文本问题中也能使用，而不会受限于512的文本长度）。在本文中均采用512长度的文本进行训练</li>
-</ul>
-<h4 id="论文改进"><a href="#论文改进" class="headerlink" title="论文改进"></a>论文改进</h4><h5 id="动态掩码和静态掩码"><a href="#动态掩码和静态掩码" class="headerlink" title="动态掩码和静态掩码"></a>动态掩码和静态掩码</h5><p>&emsp;&emsp;BERT是在训练之前就已经将训练数据处理好了，本论文是在训练过程中对数据进行mask，从结果来看动态掩码效果有提升，但不是很明显。<br><img src="/images/roberta-mask.png" alt="image"></p>
-<h5 id="不同文档分割方式和NSP任务"><a href="#不同文档分割方式和NSP任务" class="headerlink" title="不同文档分割方式和NSP任务"></a>不同文档分割方式和NSP任务</h5><p>&emsp;&emsp;分为四种情况进行实验：</p>
+<h5 id="bleu的定义及计算方法"><a href="#bleu的定义及计算方法" class="headerlink" title="bleu的定义及计算方法"></a>bleu的定义及计算方法</h5><p>&emsp;&emsp;bleu指标背后的思想很简单，就是我们在评估两个句子是否相似的时候，一般会看两个句子中是不是采用了相同的字或者词，如果相同的字或者词越多的话，说明两个句子越相似，在翻译中就是翻译的质量越好。虽然这种方法忽略了相似词，但是仍旧有一定的指导意义。<br>&emsp;&emsp;在进一步介绍bleu之前，需要了解两个概念，参考翻译和候选翻译集。在翻译中，对于一个文本，会通过人工翻译出来多个参考答案。候选翻译集就是模型翻译出来的结果。在计算bleu值，我们会将候选翻译集中句子依次和参考翻译中的句子进行比较，计算出对应的指标。了解这两个定义之后，下面先直接放出bleu的计算公式。<br>$$<br>BLEU = BP \cdot exp(\sum_{n=1}^N \omega_n \log(P_n))<br>$$<br>$$<br>BP =<br>\begin{cases}<br>1&amp; if \quad c&gt;r \\<br>e^{1-\frac{r}{c}}&amp; if \quad c \leq r<br>\end{cases}<br>$$<br>&emsp;&emsp;其中BP是惩罚系数，会对较短的翻译句子进行惩罚；$N$是N-grams，一般$N$为4，表明我们会基于n-grams（n=1，2，3，4）来计算bleu值；$\omega_n$是各个grams的权重；$P_n$是计算各个grams下的重合度，具体计算方法后面会介绍。<br>&emsp;&emsp;以上的计算方法是经过多次改进后的，我们下面介绍下各个改进的原因。</p>
+<h5 id="P-n-的计算方法"><a href="#P-n-的计算方法" class="headerlink" title="$P_n$的计算方法"></a>$P_n$的计算方法</h5><p>&emsp;&emsp;考虑1-grams，假如我们有以下的候选句子和参考翻译：  </p>
 <ul>
-<li>SEGMENT-PAIR+NSP：来自于一个或两个文档的多个句子组成总的输入，和原有的BERT论文一致</li>
-<li>SENTENCE-PAIR+NSP：来自于一个或两个文档的单个句子，句子级别的</li>
-<li>FULL-SENTENCES：来自于多个文档的句子，不同文档的句子之间用符号分隔，没有NSP</li>
-<li>DOC-SENTENCES：来自于当个文档的句子，没有NSP  </li>
+<li>候选句子：the the the the the the the  </li>
+<li>参考句子1：the cat is on the mat  </li>
+<li>参考句子2：there is a cat on the mat  </li>
 </ul>
-<p>&emsp;&emsp;具体的结果如下：去除NSP任务后，效果有所提升；采用同个文档的训练效果比较好<br><img src="/images/roberta-nsp.png" alt="image"></p>
-<h5 id="训练采用更大的batch-size"><a href="#训练采用更大的batch-size" class="headerlink" title="训练采用更大的batch_size"></a>训练采用更大的batch_size</h5><p>&emsp;&emsp;相比于BERT采用256的batch_size，本论文实验了更大的batch的影响，同时控制了模型对每个训练样本的利用次数是一致的，发现采用更大的batch，同时提高学习率，可以在一定程度提升模型效果。<br><img src="/images/roberta-batch.png" alt="image"></p>
-<h5 id="文本编码方式"><a href="#文本编码方式" class="headerlink" title="文本编码方式"></a>文本编码方式</h5><p>&emsp;&emsp;采用byte-level的BPE代替character-level的BPE</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>&emsp;&emsp;在进行实验的时候，主要把以上四个方面给加入到模型中，主要是：动态掩码；去除NSP；大batch；byte-level的BPE。同时还实验了预训练数据集的大小和每个样本的训练轮数。结果表明更多数据和更长的训练时间可以提高模型效果（得到的结论都是符合直观理解的）。<br><img src="/images/roberta-train-longer.png" alt="image"></p>
+<p>&emsp;&emsp;在计算$P_1$的时候，由于the这个单词在参考句子中出现过，而且候选句子都是the，所以分子是7，分母是候选句子的长度，也是7，所以最后得分是1，这和我们的理解完全不一样，所以为了避免生成这些无意义的翻译，我们需要对单词重复出现的次数进行限制。<br>&emsp;&emsp;还是以上面的例子为例，限定分子中重复单词的个数，有多种方法可以解决这个问题，下面介绍其中一种方法的计算流程。</p>
+<ul>
+<li>统计候选句子和参考句子中the的出现次数，在候选句子中the出现了7次，参考句子1中出现了2次，参考句子2出现了1次。</li>
+<li>将候选句子的7次和参考句子1的2次比较，选择较小的，即为2次；然后将候选句子的7次和参考句子2的1次比较，选择较小的，即为1次。</li>
+<li>将两次比较结果的2次和1次比较，选择较大的，即为2次，则对于候选句子分子为2。</li>
+<li>分母仍然是候选句子的长度7，则可得$P_1=\frac{2}{7}=0.286$。  </li>
+</ul>
+<p>&emsp;&emsp;上面方法计算得到的就是1-grams的值，从这结果可以看出1-grams还是不能有效反映两个句子的相似性，这时候就得考虑引入n-grams了。</p>
+<h5 id="多个n-grams的组合"><a href="#多个n-grams的组合" class="headerlink" title="多个n-grams的组合"></a>多个n-grams的组合</h5><p>&emsp;&emsp;按照上面的思路我们计算得到了1-grams，根据同样的思路可以计算2-grams(the, the)，3-grams(the, the, the)，4-grams(the, the, the, the)的分值，由于这些多元组在参考句子中均为出现，所以结果均为0。为了组合这几个分数，我们会取对数之后再进行加权，但这会有个问题就是0没有对数，所以在实际处理过程中会有各种方法进行修正。<br>&emsp;&emsp;在使用nltk的时候，可以通过<code>SmoothingFunction</code>来选择各种修正方法，默认是<code>SmoothingFunction().method0</code>。在实际使用的时候，不同的修正方法对结果还是有很大影响的。但是只要采用同个修正方法，结果具有对比性就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from nltk.translate.bleu_score import sentence_bleu</span><br><span class="line">from nltk.translate.bleu_score import SmoothingFunction</span><br><span class="line"></span><br><span class="line">smoothie &#x3D; SmoothingFunction().method4</span><br><span class="line">sentence_bleu([[&quot;你&quot;, &quot;好&quot;, &quot;啊&quot;]], [&quot;你&quot;, &quot;好&quot;], smoothing_function&#x3D;smoothie)</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;上面计算出来的bleu值比较依赖于我们采用的修正方法。为了解决这个问题，我们可以采用<code>corpus_bleu</code>，和<code>sentence_bleu</code>只计算单个句子的bleu值不同，<code>corpus_bleu</code>是计算整体的bleu值，这样可以降低某个grams缺失的影响。<br>&emsp;&emsp;比如有两个候选句子A和B，原来句子A的4-grams的计算方法是$P_4=\frac{n_{4A}}{L_A}$，其中$n_{4A}$是和参考句子重合的4-grams个数，$L_A$是句子A的长度，同理句子B的4-grams是$P_4=\frac{n_{4B}}{L_B}$，如果没有重合的4-grams的话，计算出来的$P_4=0$。采用<code>corpus_bleu</code>的话，$P_4=\frac{n_{4A}+n_{4B}}{L_A+L_B}$，如果文档足够多的话，则可以避免为0了，也无需采用修正方法了。<br>&emsp;&emsp;所以在使用bleu的时候，需要考虑是采用<code>sentence_bleu</code>还是<code>corpus_bleu</code>，如果关注某个句子的bleu值，需要对具体case进行分析的话，可以采用<code>sentence_bleu</code>，如果关注整体性能的话，可以采用<code>corpus_bleu</code>。</p>
+<h5 id="译句较短惩罚"><a href="#译句较短惩罚" class="headerlink" title="译句较短惩罚"></a>译句较短惩罚</h5><p>&emsp;&emsp;考虑下面的例子，按照上面方法计算出来的$P_1$和$P_2$都是1，所以为了解决这个问题，就对过短的句子增加了一个惩罚项。</p>
+<ul>
+<li>候选句子：the cat </li>
+<li>参考句子1：the cat is on the mat  </li>
+<li>参考句子2：there is a cat on the mat  </li>
+</ul>
+<h5 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h5><p><a href="https://blog.csdn.net/qq_31584157/article/details/77709454" target="_blank" rel="noopener">机器翻译自动评估-BLEU算法详解</a></p>
 
     </div>
 
@@ -291,9 +285,6 @@
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="tag"># 论文阅读</a>
-          </div>
 
         
 
@@ -301,13 +292,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/07/20/ALBERT/" rel="prev" title="ALBERT">
-      <i class="fa fa-chevron-left"></i> ALBERT
+    <a href="/2020/07/26/%E5%9F%BA%E4%BA%8Ehexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="基于hexo搭建个人博客">
+      <i class="fa fa-chevron-left"></i> 基于hexo搭建个人博客
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/07/26/%E5%9F%BA%E4%BA%8Ehexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="next" title="基于hexo搭建个人博客">
-      基于hexo搭建个人博客 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -367,7 +355,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#论文简介"><span class="nav-number">1.</span> <span class="nav-text">论文简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BERT介绍"><span class="nav-number">2.</span> <span class="nav-text">BERT介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#原BERT的参数设置"><span class="nav-number">2.1.</span> <span class="nav-text">原BERT的参数设置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#本文复现BERT的参数设置"><span class="nav-number">2.2.</span> <span class="nav-text">本文复现BERT的参数设置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#论文改进"><span class="nav-number">3.</span> <span class="nav-text">论文改进</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#动态掩码和静态掩码"><span class="nav-number">3.1.</span> <span class="nav-text">动态掩码和静态掩码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#不同文档分割方式和NSP任务"><span class="nav-number">3.2.</span> <span class="nav-text">不同文档分割方式和NSP任务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#训练采用更大的batch-size"><span class="nav-number">3.3.</span> <span class="nav-text">训练采用更大的batch_size</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#文本编码方式"><span class="nav-number">3.4.</span> <span class="nav-text">文本编码方式</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#bleu的定义及计算方法"><span class="nav-number">1.</span> <span class="nav-text">bleu的定义及计算方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#P-n-的计算方法"><span class="nav-number">2.</span> <span class="nav-text">$P_n$的计算方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#多个n-grams的组合"><span class="nav-number">3.</span> <span class="nav-text">多个n-grams的组合</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#译句较短惩罚"><span class="nav-number">4.</span> <span class="nav-text">译句较短惩罚</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -549,7 +537,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'blog-comment',
       owner       : 'linhao0204',
       admin       : ['linhao0204'],
-      id          : 'c1380ee434b1cf1d957d9f6c0135c3c2',
+      id          : '66de4e2b05b4595aa7785d8520d768ad',
         language: 'zh-CN',
       distractionFreeMode: true
     });

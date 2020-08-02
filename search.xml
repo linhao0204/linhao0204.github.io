@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>ALBERT</title>
-    <url>/2020/07/20/ALBERT/</url>
-    <content><![CDATA[<hr>
-<h4 id="论文简介"><a href="#论文简介" class="headerlink" title="论文简介"></a>论文简介</h4><p>&emsp;&emsp;在预训练的时候，通过增大模型大小可以有效提升模型在下游任务的表现，但是模型大小会受到GPU/TPU内存大小和训练时间的限制。为了解决这些问题，我们提出了两个降低模型参数的方法来降低BERT的内存占用以及提升训练速度。实验表明我们模型比原有BERT模型规模更小，同时我们使用了自监督损失来建模句子内部的相关性，能够有效提升模型在具有多个句子输入的下游任务的效果。在具有更少参数的情况下，我们的模型在多个任务建立了SOTA的效果。</p>
+    <title>bleu简介</title>
+    <url>/2020/07/28/bleu%E7%AE%80%E4%BB%8B/</url>
+    <content><![CDATA[<p>&emsp;&emsp;BLEU (Bilingual Evaluation Understudy), 其意思是双语评估替补。该指标首次提出是用于对机器翻译结果的评估，但是后来越来越多地用于对各种自然语言处理任务的评估。在某些任务中，虽然bleu值不是一个很完美的评估指标，但是由于其计算简单且快速，不需要人工评估，所以对于这些任务还是能够提供一定指导意义的。本文只介绍bleu定义及nltk的使用。</p>
 <a id="more"></a>
-<h4 id="待解决的问题和方法"><a href="#待解决的问题和方法" class="headerlink" title="待解决的问题和方法"></a>待解决的问题和方法</h4><p>&emsp;&emsp;本文在原有的BERT的基础上增加了一倍的隐藏层大小，从1024增加到2048，但是从实验结论上来看，模型效果反而下降了，说明单纯增加模型参数并不能提升模型效果。为了在不改变模型结构的条件下减少模型参数，并提升训练速度，本文提出了两种方法。</p>
+<h5 id="bleu的定义及计算方法"><a href="#bleu的定义及计算方法" class="headerlink" title="bleu的定义及计算方法"></a>bleu的定义及计算方法</h5><p>&emsp;&emsp;bleu指标背后的思想很简单，就是我们在评估两个句子是否相似的时候，一般会看两个句子中是不是采用了相同的字或者词，如果相同的字或者词越多的话，说明两个句子越相似，在翻译中就是翻译的质量越好。虽然这种方法忽略了相似词，但是仍旧有一定的指导意义。<br>&emsp;&emsp;在进一步介绍bleu之前，需要了解两个概念，参考翻译和候选翻译集。在翻译中，对于一个文本，会通过人工翻译出来多个参考答案。候选翻译集就是模型翻译出来的结果。在计算bleu值，我们会将候选翻译集中句子依次和参考翻译中的句子进行比较，计算出对应的指标。了解这两个定义之后，下面先直接放出bleu的计算公式。<br>$$<br>BLEU = BP \cdot exp(\sum_{n=1}^N \omega_n \log(P_n))<br>$$<br>$$<br>BP =<br>\begin{cases}<br>1&amp; if \quad c&gt;r \\<br>e^{1-\frac{r}{c}}&amp; if \quad c \leq r<br>\end{cases}<br>$$<br>&emsp;&emsp;其中BP是惩罚系数，会对较短的翻译句子进行惩罚；$N$是N-grams，一般$N$为4，表明我们会基于n-grams（n=1，2，3，4）来计算bleu值；$\omega_n$是各个grams的权重；$P_n$是计算各个grams下的重合度，具体计算方法后面会介绍。<br>&emsp;&emsp;以上的计算方法是经过多次改进后的，我们下面介绍下各个改进的原因。</p>
+<h5 id="P-n-的计算方法"><a href="#P-n-的计算方法" class="headerlink" title="$P_n$的计算方法"></a>$P_n$的计算方法</h5><p>&emsp;&emsp;考虑1-grams，假如我们有以下的候选句子和参考翻译：  </p>
 <ul>
-<li>对词向量大小进行因式分解，将隐层大小和词向量大小解耦合</li>
-<li>跨层参数共享</li>
-<li>采用SOP（sentence-order prediction）任务代替NSP任务</li>
+<li>候选句子：the the the the the the the  </li>
+<li>参考句子1：the cat is on the mat  </li>
+<li>参考句子2：there is a cat on the mat  </li>
 </ul>
-<p>&emsp;&emsp;通过上面两种方法还有正则的效果，并提升了模型训练的稳定性。</p>
-<h4 id="ALBERT"><a href="#ALBERT" class="headerlink" title="ALBERT"></a>ALBERT</h4><h5 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h5><p>&emsp;&emsp;词向量表示大小$E$,编码层数目$L$，隐藏层大小$H$，前向层大小$4H$，attention头数$H/64$。</p>
-<h5 id="词向量矩阵因式分解"><a href="#词向量矩阵因式分解" class="headerlink" title="词向量矩阵因式分解"></a>词向量矩阵因式分解</h5><p>&emsp;&emsp;在BERT，RoBERTa和XLNet中，词向量的大小$E$和隐藏层大小$H$是一样的，但是这个方法会有以下两个问题。</p>
+<p>&emsp;&emsp;在计算$P_1$的时候，由于the这个单词在参考句子中出现过，而且候选句子都是the，所以分子是7，分母是候选句子的长度，也是7，所以最后得分是1，这和我们的理解完全不一样，所以为了避免生成这些无意义的翻译，我们需要对单词重复出现的次数进行限制。<br>&emsp;&emsp;还是以上面的例子为例，限定分子中重复单词的个数，有多种方法可以解决这个问题，下面介绍其中一种方法的计算流程。</p>
 <ul>
-<li>词向量的大小$E$学习到的是上下文无关的表示，隐藏层大小$H$学习到的是上下文相关的表示，而对于BERT来说模型的能力主要来源于上下文的表示，所以$H$一般有比较大的值，所以将$E$和$H$解耦合能够有效降低参数量</li>
-<li>在实际应用中，模型的词表大小$V$一般都很大，如果$E$的值也比较大的话，那么整个词向量矩阵大小为$V*E$，参数量将非常大，在更新的时候大多数参数都会很少被更新。  </li>
+<li>统计候选句子和参考句子中the的出现次数，在候选句子中the出现了7次，参考句子1中出现了2次，参考句子2出现了1次。</li>
+<li>将候选句子的7次和参考句子1的2次比较，选择较小的，即为2次；然后将候选句子的7次和参考句子2的1次比较，选择较小的，即为1次。</li>
+<li>将两次比较结果的2次和1次比较，选择较大的，即为2次，则对于候选句子分子为2。</li>
+<li>分母仍然是候选句子的长度7，则可得$P_1=\frac{2}{7}=0.286$。  </li>
 </ul>
-<p>&emsp;&emsp;基于上面的理由，我们将词向量映射到较小的$E$，然后再映射到$H$，这样就可以打破$E \equiv H$的限制，词向量矩阵的大小从$O(V \times H) $降低到$O(V \times E+E \times H)$，其中$H \gg E$。本质上就是在降低了词向量的大小，然后加上一层全连接层将维度映射到$H$。</p>
-<h5 id="参数共享"><a href="#参数共享" class="headerlink" title="参数共享"></a>参数共享</h5><p>&emsp;&emsp;根据transformer的结构，参数共享可以包括以下几种：1、共享FFN的参数；2、共享attention层的参数；3、同时共享FFN和attention层参数。<br>&emsp;&emsp;同时还比较了BERT和ALBERT输入和输出之间L2距离和cos距离，结果表明在ALBERT中，层与层之间的输入、输出转换更加光滑。</p>
-<h5 id="SOP任务"><a href="#SOP任务" class="headerlink" title="SOP任务"></a>SOP任务</h5><p>&emsp;&emsp;在BERT中除了采用MLM任务，还加入了NSP任务，该任务是判断两个句子是否是连贯的两个句子，正样本是同个文档里连贯的两句话，负样本是从两个不同的文档中分别抽取的句子。有几篇论文讨论了NSP任务的有效性，发现去除NSP任务之后模型效果反而会有提升。<br>&emsp;&emsp;本论文认为NSP任务之所以没有效果是因为这个任务太简单了，这个任务选取了两个不同文档的句子作为负样本，这样就同时为该任务引入了文档主题信息，而主题分类的任务比句子连贯性的任务要简单得多。所以NSP任务并没有起到原有的效果。（而BERT论文在进行消融实验的时候发现NSP任务还是有效果的，RoBERTa论文中认为有可能是在进行消融实验的时候只把NSP任务去除了，但是有部分训练语料的句子对还是随机在两个文档中获取到的，导致效果会降低）<br>&emsp;&emsp;为了解决NSP过于简单的问题，论文中提出了SOP任务，即预测两个句子的顺序是否正常。正样本的产生方法还是和BERT一样，在产生负样本的时候，还是从同个文档中获取到连续的两个句子，然后颠倒两者的顺序。从这可以看出，SOP任务避免引入了主题信息，使模型更加注重于学习句子的连贯性。而且SOP任务训练出来的模型可以在一定程度上解决NSP任务，但是NSP任务却无法解决SOP任务。</p>
-<h4 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h4><p>&emsp;&emsp;1、本论文采用了n-gram掩码，n大小按照以下公式进行选择，n最大为3。<br>$$p(n) = \frac{\frac{1}{n}}{\sum_{k=1}^N\frac{1}{k}}$$</p>
-<p>&emsp;&emsp;2、在进行模型大小调整的时候，主要调整的是宽度而不是深度。<br><img src="/images/ALBERT-model-size.png" alt="image"><br>&emsp;&emsp;3、<strong>从下面结果可以看出来如果只是采用参数共享，不增加模型大小的话，ALBERT的效果是不如BERT的。</strong> 但是通过增加层数和隐层大小，ALBERT在保持参数量低于BERT的前提下，在各个任务上可以得到更优的效果。<br>&emsp;&emsp;由于模型整体结构并没有大改变，ALBERT对于训练速度和推理速度并没有明显提升，只是降低了参数量。(在实验ALBERT和BERT的时候，同样的结构大小，同样的数据，ALBERT训练30个epoch，batch大小为64，，每个样本大约耗时2ms，训练时间为11个小时。BERT训练50个epoch，batch为大小128，每个样本大约耗时2.2ms,训练时间为22个小时。说明ALBERT的训练数据有所提升，但不是很明显)<br><img src="/images/ALBERT-result.png" alt="image"><br>&emsp;&emsp;4、在没有进行参数共享时，词向量大小$E$越大，模型效果越好；但是在参数共享的条件下，$E=128$时效果最佳。<br><img src="/images/ALBERT-factorization.png" alt="image"><br>&emsp;&emsp;5、参数共享对模型效果有损伤，而且这损伤主要来源于FFN参数的共享，attention层参数的共享损伤较少<br><img src="/images/ALBERT-share.png" alt="image"><br>&emsp;&emsp;6、NSP任务对模型效果提升很小，SOP任务对模型效果提升很大<br><img src="/images/albert-sop.png" alt="image"><br>&emsp;&emsp;7、实验了不同深度和宽度的ALBERT，发现不断加大深度和宽度并不能一直提升模型效果，在后面效果会有个下降的过程。其实这应该也是可以理解的，当模型深度和宽度不断增加的时候，模型的训练难度也会增加。<br>&emsp;&emsp;8、同等的训练时间，ALBERT-xxlarge比BERT-large在平均准确率上仍然有1.5%的提升<br>&emsp;&emsp;9、去除dropout对模型效果有提升。</p>
+<p>&emsp;&emsp;上面方法计算得到的就是1-grams的值，从这结果可以看出1-grams还是不能有效反映两个句子的相似性，这时候就得考虑引入n-grams了。</p>
+<h5 id="多个n-grams的组合"><a href="#多个n-grams的组合" class="headerlink" title="多个n-grams的组合"></a>多个n-grams的组合</h5><p>&emsp;&emsp;按照上面的思路我们计算得到了1-grams，根据同样的思路可以计算2-grams(the, the)，3-grams(the, the, the)，4-grams(the, the, the, the)的分值，由于这些多元组在参考句子中均为出现，所以结果均为0。为了组合这几个分数，我们会取对数之后再进行加权，但这会有个问题就是0没有对数，所以在实际处理过程中会有各种方法进行修正。<br>&emsp;&emsp;在使用nltk的时候，可以通过<code>SmoothingFunction</code>来选择各种修正方法，默认是<code>SmoothingFunction().method0</code>。在实际使用的时候，不同的修正方法对结果还是有很大影响的。但是只要采用同个修正方法，结果具有对比性就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">from nltk.translate.bleu_score import sentence_bleu</span><br><span class="line">from nltk.translate.bleu_score import SmoothingFunction</span><br><span class="line"></span><br><span class="line">smoothie &#x3D; SmoothingFunction().method4</span><br><span class="line">sentence_bleu([[&quot;你&quot;, &quot;好&quot;, &quot;啊&quot;]], [&quot;你&quot;, &quot;好&quot;], smoothing_function&#x3D;smoothie)</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;上面计算出来的bleu值比较依赖于我们采用的修正方法。为了解决这个问题，我们可以采用<code>corpus_bleu</code>，和<code>sentence_bleu</code>只计算单个句子的bleu值不同，<code>corpus_bleu</code>是计算整体的bleu值，这样可以降低某个grams缺失的影响。<br>&emsp;&emsp;比如有两个候选句子A和B，原来句子A的4-grams的计算方法是$P_4=\frac{n_{4A}}{L_A}$，其中$n_{4A}$是和参考句子重合的4-grams个数，$L_A$是句子A的长度，同理句子B的4-grams是$P_4=\frac{n_{4B}}{L_B}$，如果没有重合的4-grams的话，计算出来的$P_4=0$。采用<code>corpus_bleu</code>的话，$P_4=\frac{n_{4A}+n_{4B}}{L_A+L_B}$，如果文档足够多的话，则可以避免为0了，也无需采用修正方法了。<br>&emsp;&emsp;所以在使用bleu的时候，需要考虑是采用<code>sentence_bleu</code>还是<code>corpus_bleu</code>，如果关注某个句子的bleu值，需要对具体case进行分析的话，可以采用<code>sentence_bleu</code>，如果关注整体性能的话，可以采用<code>corpus_bleu</code>。</p>
+<h5 id="译句较短惩罚"><a href="#译句较短惩罚" class="headerlink" title="译句较短惩罚"></a>译句较短惩罚</h5><p>&emsp;&emsp;考虑下面的例子，按照上面方法计算出来的$P_1$和$P_2$都是1，所以为了解决这个问题，就对过短的句子增加了一个惩罚项。</p>
+<ul>
+<li>候选句子：the cat </li>
+<li>参考句子1：the cat is on the mat  </li>
+<li>参考句子2：there is a cat on the mat  </li>
+</ul>
+<h5 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h5><p><a href="https://blog.csdn.net/qq_31584157/article/details/77709454" target="_blank" rel="noopener">机器翻译自动评估-BLEU算法详解</a></p>
 ]]></content>
       <categories>
-        <category>论文阅读</category>
+        <category>学习笔记</category>
       </categories>
-      <tags>
-        <tag>论文阅读</tag>
-      </tags>
   </entry>
   <entry>
     <title>RoBERTa</title>
@@ -62,6 +65,38 @@
 <h5 id="训练采用更大的batch-size"><a href="#训练采用更大的batch-size" class="headerlink" title="训练采用更大的batch_size"></a>训练采用更大的batch_size</h5><p>&emsp;&emsp;相比于BERT采用256的batch_size，本论文实验了更大的batch的影响，同时控制了模型对每个训练样本的利用次数是一致的，发现采用更大的batch，同时提高学习率，可以在一定程度提升模型效果。<br><img src="/images/roberta-batch.png" alt="image"></p>
 <h5 id="文本编码方式"><a href="#文本编码方式" class="headerlink" title="文本编码方式"></a>文本编码方式</h5><p>&emsp;&emsp;采用byte-level的BPE代替character-level的BPE</p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>&emsp;&emsp;在进行实验的时候，主要把以上四个方面给加入到模型中，主要是：动态掩码；去除NSP；大batch；byte-level的BPE。同时还实验了预训练数据集的大小和每个样本的训练轮数。结果表明更多数据和更长的训练时间可以提高模型效果（得到的结论都是符合直观理解的）。<br><img src="/images/roberta-train-longer.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>论文阅读</category>
+      </categories>
+      <tags>
+        <tag>论文阅读</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ALBERT</title>
+    <url>/2020/07/20/ALBERT/</url>
+    <content><![CDATA[<hr>
+<h4 id="论文简介"><a href="#论文简介" class="headerlink" title="论文简介"></a>论文简介</h4><p>&emsp;&emsp;在预训练的时候，通过增大模型大小可以有效提升模型在下游任务的表现，但是模型大小会受到GPU/TPU内存大小和训练时间的限制。为了解决这些问题，我们提出了两个降低模型参数的方法来降低BERT的内存占用以及提升训练速度。实验表明我们模型比原有BERT模型规模更小，同时我们使用了自监督损失来建模句子内部的相关性，能够有效提升模型在具有多个句子输入的下游任务的效果。在具有更少参数的情况下，我们的模型在多个任务建立了SOTA的效果。</p>
+<a id="more"></a>
+<h4 id="待解决的问题和方法"><a href="#待解决的问题和方法" class="headerlink" title="待解决的问题和方法"></a>待解决的问题和方法</h4><p>&emsp;&emsp;本文在原有的BERT的基础上增加了一倍的隐藏层大小，从1024增加到2048，但是从实验结论上来看，模型效果反而下降了，说明单纯增加模型参数并不能提升模型效果。为了在不改变模型结构的条件下减少模型参数，并提升训练速度，本文提出了两种方法。</p>
+<ul>
+<li>对词向量大小进行因式分解，将隐层大小和词向量大小解耦合</li>
+<li>跨层参数共享</li>
+<li>采用SOP（sentence-order prediction）任务代替NSP任务</li>
+</ul>
+<p>&emsp;&emsp;通过上面两种方法还有正则的效果，并提升了模型训练的稳定性。</p>
+<h4 id="ALBERT"><a href="#ALBERT" class="headerlink" title="ALBERT"></a>ALBERT</h4><h5 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h5><p>&emsp;&emsp;词向量表示大小$E$,编码层数目$L$，隐藏层大小$H$，前向层大小$4H$，attention头数$H/64$。</p>
+<h5 id="词向量矩阵因式分解"><a href="#词向量矩阵因式分解" class="headerlink" title="词向量矩阵因式分解"></a>词向量矩阵因式分解</h5><p>&emsp;&emsp;在BERT，RoBERTa和XLNet中，词向量的大小$E$和隐藏层大小$H$是一样的，但是这个方法会有以下两个问题。</p>
+<ul>
+<li>词向量的大小$E$学习到的是上下文无关的表示，隐藏层大小$H$学习到的是上下文相关的表示，而对于BERT来说模型的能力主要来源于上下文的表示，所以$H$一般有比较大的值，所以将$E$和$H$解耦合能够有效降低参数量</li>
+<li>在实际应用中，模型的词表大小$V$一般都很大，如果$E$的值也比较大的话，那么整个词向量矩阵大小为$V*E$，参数量将非常大，在更新的时候大多数参数都会很少被更新。  </li>
+</ul>
+<p>&emsp;&emsp;基于上面的理由，我们将词向量映射到较小的$E$，然后再映射到$H$，这样就可以打破$E \equiv H$的限制，词向量矩阵的大小从$O(V \times H) $降低到$O(V \times E+E \times H)$，其中$H \gg E$。本质上就是在降低了词向量的大小，然后加上一层全连接层将维度映射到$H$。</p>
+<h5 id="参数共享"><a href="#参数共享" class="headerlink" title="参数共享"></a>参数共享</h5><p>&emsp;&emsp;根据transformer的结构，参数共享可以包括以下几种：1、共享FFN的参数；2、共享attention层的参数；3、同时共享FFN和attention层参数。<br>&emsp;&emsp;同时还比较了BERT和ALBERT输入和输出之间L2距离和cos距离，结果表明在ALBERT中，层与层之间的输入、输出转换更加光滑。</p>
+<h5 id="SOP任务"><a href="#SOP任务" class="headerlink" title="SOP任务"></a>SOP任务</h5><p>&emsp;&emsp;在BERT中除了采用MLM任务，还加入了NSP任务，该任务是判断两个句子是否是连贯的两个句子，正样本是同个文档里连贯的两句话，负样本是从两个不同的文档中分别抽取的句子。有几篇论文讨论了NSP任务的有效性，发现去除NSP任务之后模型效果反而会有提升。<br>&emsp;&emsp;本论文认为NSP任务之所以没有效果是因为这个任务太简单了，这个任务选取了两个不同文档的句子作为负样本，这样就同时为该任务引入了文档主题信息，而主题分类的任务比句子连贯性的任务要简单得多。所以NSP任务并没有起到原有的效果。（而BERT论文在进行消融实验的时候发现NSP任务还是有效果的，RoBERTa论文中认为有可能是在进行消融实验的时候只把NSP任务去除了，但是有部分训练语料的句子对还是随机在两个文档中获取到的，导致效果会降低）<br>&emsp;&emsp;为了解决NSP过于简单的问题，论文中提出了SOP任务，即预测两个句子的顺序是否正常。正样本的产生方法还是和BERT一样，在产生负样本的时候，还是从同个文档中获取到连续的两个句子，然后颠倒两者的顺序。从这可以看出，SOP任务避免引入了主题信息，使模型更加注重于学习句子的连贯性。而且SOP任务训练出来的模型可以在一定程度上解决NSP任务，但是NSP任务却无法解决SOP任务。</p>
+<h4 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h4><p>&emsp;&emsp;1、本论文采用了n-gram掩码，n大小按照以下公式进行选择，n最大为3。<br>$$p(n) = \frac{\frac{1}{n}}{\sum_{k=1}^N\frac{1}{k}}$$</p>
+<p>&emsp;&emsp;2、在进行模型大小调整的时候，主要调整的是宽度而不是深度。<br><img src="/images/ALBERT-model-size.png" alt="image"><br>&emsp;&emsp;3、<strong>从下面结果可以看出来如果只是采用参数共享，不增加模型大小的话，ALBERT的效果是不如BERT的。</strong> 但是通过增加层数和隐层大小，ALBERT在保持参数量低于BERT的前提下，在各个任务上可以得到更优的效果。<br>&emsp;&emsp;由于模型整体结构并没有大改变，ALBERT对于训练速度和推理速度并没有明显提升，只是降低了参数量。(在实验ALBERT和BERT的时候，同样的结构大小，同样的数据，ALBERT训练30个epoch，batch大小为64，，每个样本大约耗时2ms，训练时间为11个小时。BERT训练50个epoch，batch为大小128，每个样本大约耗时2.2ms,训练时间为22个小时。说明ALBERT的训练数据有所提升，但不是很明显)<br><img src="/images/ALBERT-result.png" alt="image"><br>&emsp;&emsp;4、在没有进行参数共享时，词向量大小$E$越大，模型效果越好；但是在参数共享的条件下，$E=128$时效果最佳。<br><img src="/images/ALBERT-factorization.png" alt="image"><br>&emsp;&emsp;5、参数共享对模型效果有损伤，而且这损伤主要来源于FFN参数的共享，attention层参数的共享损伤较少<br><img src="/images/ALBERT-share.png" alt="image"><br>&emsp;&emsp;6、NSP任务对模型效果提升很小，SOP任务对模型效果提升很大<br><img src="/images/albert-sop.png" alt="image"><br>&emsp;&emsp;7、实验了不同深度和宽度的ALBERT，发现不断加大深度和宽度并不能一直提升模型效果，在后面效果会有个下降的过程。其实这应该也是可以理解的，当模型深度和宽度不断增加的时候，模型的训练难度也会增加。<br>&emsp;&emsp;8、同等的训练时间，ALBERT-xxlarge比BERT-large在平均准确率上仍然有1.5%的提升<br>&emsp;&emsp;9、去除dropout对模型效果有提升。</p>
 ]]></content>
       <categories>
         <category>论文阅读</category>
